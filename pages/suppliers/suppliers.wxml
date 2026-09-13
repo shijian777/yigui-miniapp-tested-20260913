@@ -1,0 +1,27 @@
+<!-- pages/suppliers/suppliers.wxml —— 供应商管理 -->
+<view class="page theme-{{theme}}">
+  <view class="card list-card" wx:if="{{list.length}}">
+    <view class="sup-row" wx:for="{{list}}" wx:key="_id" data-id="{{item._id}}" bindtap="goEdit">
+      <view class="flex-1">
+        <view class="row-title">{{item.name}}</view>
+        <view class="muted small mt10">
+          <block wx:if="{{item.contact}}">{{item.contact}} · </block>
+          <block wx:if="{{item.phone}}">电话 {{item.phone}}</block>
+          <block wx:if="{{!item.contact && !item.phone}}">未填联系方式</block>
+        </view>
+        <view class="muted small mt10" wx:if="{{item.remark}}">{{item.remark}}</view>
+      </view>
+      <view class="sup-arrow">›</view>
+    </view>
+  </view>
+
+  <view class="card empty-mini" wx:elif="{{!loading}}">
+    <view class="empty-txt">还没有供应商，去添加第一个吧</view>
+    <button class="btn btn-primary" bindtap="goAdd" style="margin-top:20rpx;">新增供应商</button>
+  </view>
+  <view class="card empty-mini" wx:elif="{{loading}}">
+    <view class="empty-txt">加载中…</view>
+  </view>
+
+  <view class="fab" bindtap="goAdd">＋</view>
+</view>

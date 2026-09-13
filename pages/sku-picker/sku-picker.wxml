@@ -1,0 +1,83 @@
+<!-- pages/sku-picker/sku-picker.wxml -->
+<view class="page theme-{{theme}}">
+  <!-- 顶部：商品概况 -->
+  <view class="card" wx:if="{{goods}}">
+    <view class="hd">
+      <view class="name">{{goods.name}}</view>
+      <view class="muted small" wx:if="{{goods.category}}">{{goods.category}}</view>
+    </view>
+    <view class="muted small">
+      <text wx:if="{{colors.length > 1}}">颜色 {{colors.length}} 种 · </text>
+      <text wx:if="{{sizes.length > 1}}">尺码 {{sizes.length}} 种</text>
+    </view>
+  </view>
+
+  <!-- 色码矩阵 -->
+  <view class="card">
+    <view class="section-title">选择 色码 · 尺码</view>
+
+    <!-- 表头：尺码列 -->
+    <view class="matrix">
+      <view class="matrix-head">
+        <view class="matrix-corner muted small">色 \ 码</view>
+        <block wx:for="{{sizes}}" wx:key="*this">
+          <view class="matrix-col-head">{{item}}</view>
+        </block>
+      </view>
+
+      <!-- 每一行（颜色） -->
+      <view class="matrix-row" wx:for="{{flatList}}" wx:key="color" wx:for-item="row">
+        <view class="matrix-row-head">{{row.color}}</view>
+        <block wx:for="{{row.cells}}" wx:key="key" wx:for-item="cell">
+          <view class="cell {{selectedKey === cell.key ? 'cell-on' : ''}} {{cell.out ? 'cell-out' : ''}}"
+                data-key="{{cell.key}}"
+                bindtap="pickCell">
+            <view class="cell-stock">{{cell.out ? '-' : cell.stock}}</view>
+            <view class="cell-key muted small">{{cell.size}}</view>
+          </view>
+        </block>
+      </view>
+    </view>
+
+    <view class="legend muted small">
+      <text class="legend-dot dot-on"></text> 已选
+      <text class="legend-dot dot-out"></text> 无库存
+    </view>
+  </view>
+
+  <!-- 已选 SKU + 数量 -->
+  <view class="card" wx:if="{{selectedSku}}">
+    <view class="between">
+      <view class="flex-1">
+        <view class="row-title">{{selectedSku.color}} · {{selectedSku.size}}</view>
+        <view class="muted small">库存 {{selectedSku.stock}} 件 · 单价 ¥{{selectedSku.price}} · 成本 ¥{{selectedSku.costPrice}}</view>
+      </view>
+      <view class="qty-control">
+        <view class="step" data-delta="-1" bindtap="stepQty">−</view>
+        <input disabled="{{confirming}}" class="qty-input" type="number" value="{{qty}}" bindinput="onQtyInput" bindblur="onQtyBlur" />
+        <view class="step" data-delta="1" bindtap="stepQty">＋</view>
+      </view>
+    </view>
+
+    <view class="muted small mt20" wx:if="{{mode === 'purchase'}}">
+      本次进价（默认取当前成本，可改）
+    </view>
+    <view class="cost-edit" wx:if="{{mode === 'purchase' && selectedSku}}">
+      <text class="muted small">¥</text>
+      <input disabled="{{confirming}}" class="cost-input" type="digit" value="{{selectedSku.costPrice}}"
+             placeholder="本次进价" bindinput="onCostInput" bindblur="onCostBlur" placeholder-class="ph" />
+    </view>
+  </view>
+
+  <view class="page-footer-space"></view>
+
+  <!-- 底部确认 -->
+  <view class="footer-bar">
+    <view class="muted small" style="text-align:center; padding-bottom:12rpx;" wx:if="{{!selectedSku}}">
+      请先点击上方色码格子，选中后即可{{mode === 'purchase' ? '加入进货单' : '加入购物车'}}
+    </view>
+    <button class="btn btn-primary submit-btn" disabled="{{!selectedSku || confirming}}" bindtap="confirm">
+      {{mode === 'purchase' ? '加入进货单' : '加入购物车'}}
+    </button>
+  </view>
+</view>

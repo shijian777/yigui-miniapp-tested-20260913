@@ -1,0 +1,77 @@
+<!-- pages/purchase/purchase.wxml —— 进货入库（按 SKU 行） -->
+<view class="page theme-{{theme}}">
+  <!-- 供应商 -->
+  <view class="card">
+    <view class="between" bindtap="toggleSupplierPanel">
+      <view>
+        <text class="row-title">供应商</text>
+        <text class="muted small" style="margin-left:12rpx;">{{supplierName ? '' : '（可不选，直接散货入库）'}}</text>
+      </view>
+      <view class="sup-selected">{{supplierName || '散货'}} <text class="sup-arrow">{{showSupplier ? '▲' : '▼'}}</text></view>
+    </view>
+    <view wx:if="{{showSupplier}}" class="sup-panel">
+      <view class="sup-opt {{supplierId === '' ? 'opt-on' : ''}}" data-id="" bindtap="chooseSupplier">散货（不选供应商）</view>
+      <view class="sup-opt {{supplierId === item._id ? 'opt-on' : ''}}" wx:for="{{suppliers}}" wx:key="_id" data-id="{{item._id}}"
+        data-name="{{item.name}}" bindtap="chooseSupplier">
+        <view class="flex-1">{{item.name}}</view>
+        <view class="muted small" wx:if="{{item.phone}}">{{item.phone}}</view>
+      </view>
+      <view wx:if="{{!suppliers.length}}" class="muted small">还没有供应商，可在首页「供应商」中添加</view>
+    </view>
+  </view>
+
+  <!-- 明细行 -->
+  <view class="section-title">进货明细
+    <text class="muted small">（{{lines.length}} 项 · 共 {{totalQty}} 件）</text>
+  </view>
+  <view class="card" wx:if="{{lines.length}}">
+    <view class="pur-line" wx:for="{{lines}}" wx:key="lineKey">
+      <view class="between">
+        <view class="flex-1 pur-name">{{item.name}}</view>
+        <view class="pur-amount">¥{{item.amountText}}</view>
+      </view>
+      <view class="muted small mt10">
+        <text wx:if="{{item.color || item.size}}" class="sku-tag">{{item.color}}<text wx:if="{{item.color && item.size}}"> · </text>{{item.size}}</text>
+        <text wx:else>无规格</text>
+        <text style="margin-left:10rpx;">单位 {{item.unit}}</text>
+      </view>
+      <view class="between mt20">
+        <view class="cart-qty">
+          <view class="step-btn" data-index="{{index}}" data-delta="-1" bindtap="stepQty">−</view>
+          <input disabled="{{submitting}}" class="qty-input" type="number" value="{{item.qty}}" data-index="{{index}}" bindinput="onQtyInput" bindblur="onQtyBlur" />
+          <view class="step-btn" data-index="{{index}}" data-delta="1" bindtap="stepQty">＋</view>
+        </view>
+        <view class="cost-line">
+          <text class="muted small">进价 ¥</text>
+          <input disabled="{{submitting}}" class="money-input" type="digit" value="{{item.unitCostStr}}" data-index="{{index}}" bindinput="onCostInput" bindblur="onCostBlur" />
+        </view>
+        <view class="pur-del" data-index="{{index}}" bindtap="removeLine">删除</view>
+      </view>
+    </view>
+  </view>
+  <view class="card empty-mini" wx:else>
+    <view class="empty-txt">进货单是空的</view>
+  </view>
+  <button class="btn btn-plain add-goods-btn" bindtap="addGoods">＋ 添加商品（选规格）</button>
+
+  <!-- 备注 -->
+  <view class="card">
+    <view class="form-item" style="border-bottom:none;">
+      <view class="form-label">备注</view>
+      <textarea disabled="{{submitting}}" class="input" placeholder="选填，如：夏装首批到货" value="{{remark}}" bindinput="onRemark" placeholder-class="ph" style="height:76rpx;" />
+    </view>
+  </view>
+
+  <view class="page-footer-space"></view>
+
+  <!-- 底部 -->
+  <view class="footer-bar">
+    <view class="foot-total">
+      <view class="muted small">进货合计</view>
+      <view class="foot-num">¥{{totalAmountText}}</view>
+    </view>
+    <button class="btn btn-primary submit-btn" disabled="{{!lines.length || submitting}}" bindtap="doSubmit">
+      {{submitting ? '提交中…' : '确认入库'}}
+    </button>
+  </view>
+</view>

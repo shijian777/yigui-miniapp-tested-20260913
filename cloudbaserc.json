@@ -1,0 +1,15 @@
+{
+  "envId": "FILL_AFTER_ENV_LIST",
+  "functionRoot": "cloudfunctions",
+  "functions": [
+    { "name": "login", "timeout": 5, "runtime": "Nodejs16.13", "handler": "index.main", "installDependency": true },
+    { "name": "submitSale", "timeout": 10, "runtime": "Nodejs16.13", "handler": "index.main", "installDependency": true },
+    { "name": "submitPurchase", "timeout": 10, "runtime": "Nodejs16.13", "handler": "index.main", "installDependency": true },
+    { "name": "returnSale", "timeout": 10, "runtime": "Nodejs16.13", "handler": "index.main", "installDependency": true },
+    { "name": "settleDebt", "timeout": 10, "runtime": "Nodejs16.13", "handler": "index.main", "installDependency": true },
+    { "name": "stats", "timeout": 10, "runtime": "Nodejs16.13", "handler": "index.main", "installDependency": true },
+    { "name": "slowMover", "timeout": 30, "runtime": "Nodejs16.13", "handler": "index.main", "installDependency": true },
+    { "name": "statement", "timeout": 20, "runtime": "Nodejs16.13", "handler": "index.main", "installDependency": true },
+    { "name": "migrateSku", "timeout": 30, "runtime": "Nodejs16.13", "handler": "index.main", "installDependency": true }
+  ]
+}

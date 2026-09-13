@@ -1,0 +1,9 @@
+{
+  "name": "stats",
+  "version": "1.0.0",
+  "description": "统计聚合：销售额/毛利/成本/进货额/订单数/TOP5",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

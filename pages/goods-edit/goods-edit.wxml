@@ -1,0 +1,163 @@
+<!-- pages/goods-edit/goods-edit.wxml —— 商品新增/编辑（含色码管理） -->
+<view class="page theme-{{theme}}">
+  <view class="card" wx:if="{{loading}}">档案加载中…</view>
+  <view class="card" wx:elif="{{loadError}}">{{loadError}}，请返回后重新打开。</view>
+  <block wx:else>
+  <!-- 基本信息 -->
+  <view class="card">
+    <view class="form-item">
+      <view class="form-label">名称 *</view>
+      <view class="form-value"><textarea class="input" placeholder="如：纯棉白T恤" value="{{form.name}}" bindinput="onInput" data-f="name" placeholder-class="ph" style="height:76rpx;"  disabled="{{saving}}" /></view>
+    </view>
+    <view class="form-item">
+      <view class="form-label">条码</view>
+      <view class="form-value flex scan-row">
+        <textarea class="input flex-1" placeholder="可空；点击右侧扫码自动填入" value="{{form.barcode}}" bindinput="onInput" data-f="barcode" placeholder-class="ph" style="height:76rpx;"  disabled="{{saving}}" />
+        <view class="btn-scan" hover-class="btn-scan-active" bindtap="scanBarcode">
+          <svg class="ico" viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 7V5a2 2 0 0 1 2-2h2"/>
+            <path d="M17 3h2a2 2 0 0 1 2 2v2"/>
+            <path d="M21 17v2a2 2 0 0 1-2 2h-2"/>
+            <path d="M7 21H5a2 2 0 0 1-2-2v-2"/>
+            <line x1="3" y1="12" x2="21" y2="12"/>
+            <line x1="8" y1="3" x2="8" y2="7"/>
+            <line x1="16" y1="3" x2="16" y2="7"/>
+            <line x1="8" y1="17" x2="8" y2="21"/>
+            <line x1="16" y1="17" x2="16" y2="21"/>
+          </svg>
+          <text>扫一扫</text>
+        </view>
+      </view>
+    </view>
+    <view class="form-item">
+      <view class="form-label">分类</view>
+      <view class="form-value">
+        <textarea class="input" placeholder="如：上衣/裤装/配饰（可空）" value="{{form.category}}" bindinput="onInput" data-f="category" placeholder-class="ph" style="height:76rpx;"  disabled="{{saving}}" />
+      </view>
+    </view>
+    <view class="form-item">
+      <view class="form-label">单位 *</view>
+      <view class="form-value between">
+        <textarea class="input" style="width:200rpx;height:76rpx;" placeholder="件/条/双" value="{{form.unit}}" bindinput="onInput" data-f="unit" placeholder-class="ph"  disabled="{{saving}}" />
+        <view class="form-tip" style="margin:0 0 0 20rpx;">常用于小票</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 默认价格（用于批量填充到所有 SKU） -->
+  <view class="card">
+    <view class="card-title">默认价格</view>
+    <view class="form-item" style="border-bottom:none;">
+      <view class="form-label">成本价</view>
+      <view class="form-value">
+        <input class="input" type="digit" placeholder="0.00" value="{{form.costPriceStr}}" bindinput="onInput" data-f="costPriceStr" placeholder-class="ph"  disabled="{{saving}}" />
+      </view>
+    </view>
+    <view class="form-item" style="border-bottom:none;">
+      <view class="form-label">售价</view>
+      <view class="form-value between">
+        <input class="input" type="digit" placeholder="0.00" value="{{form.priceStr}}" bindinput="onInput" data-f="priceStr" style="flex:1;" placeholder-class="ph"  disabled="{{saving}}" />
+        <view class="btn-mini" bindtap="applyDefaultPrice" style="margin-left:16rpx;">应用到全部 SKU</view>
+      </view>
+    </view>
+    <view class="form-tip">点「应用到全部 SKU」后，每个色码的价格都变成这里填的数</view>
+  </view>
+
+  <!-- 颜色 / 尺码 标签管理 -->
+  <view class="card">
+    <view class="card-title">颜色 & 尺码</view>
+    <view class="form-item">
+      <view class="form-label">颜色</view>
+      <view class="form-value">
+        <view class="tag-list">
+          <view class="tag tag-blue" wx:for="{{form.colors}}" wx:key="*this" data-idx="{{index}}" bindtap="removeColor">
+            {{item}} <view class="ico" style="width:1em;height:1em;display:inline-block;vertical-align:middle;"><view class="ico ic-649f1b6624" style="width:1em;height:1em;"></view></view>
+          </view>
+          <view class="tag-input-row">
+            <input class="input" style="width:200rpx;" placeholder="如：黑/蓝/灰" value="{{form.colorInput}}" bindinput="onTagInput" data-f="colorInput" bindconfirm="addColor" placeholder-class="ph"  disabled="{{saving}}" />
+            <view class="btn-mini" bindtap="addColor">＋ 添加</view>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view class="form-item" style="border-bottom:none;">
+      <view class="form-label">尺码</view>
+      <view class="form-value">
+        <view class="tag-list">
+          <view class="tag tag-blue" wx:for="{{form.sizes}}" wx:key="*this" data-idx="{{index}}" bindtap="removeSize">
+            {{item}} <view class="ico" style="width:1em;height:1em;display:inline-block;vertical-align:middle;"><view class="ico ic-649f1b6624" style="width:1em;height:1em;"></view></view>
+          </view>
+          <view class="tag-input-row">
+            <input class="input" style="width:200rpx;" placeholder="如：S/M/L/XL" value="{{form.sizeInput}}" bindinput="onTagInput" data-f="sizeInput" bindconfirm="addSize" placeholder-class="ph"  disabled="{{saving}}" />
+            <view class="btn-mini" bindtap="addSize">＋ 添加</view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 当前库存（编辑态显示）：库存不在此页修改，引导去进货 -->
+  <view class="card" wx:if="{{!isNew}}">
+    <view class="card-title between">
+      <view>当前库存</view>
+      <view class="stock-num">{{totalStock}} {{form.unit || '件'}}</view>
+    </view>
+    <view class="form-tip" style="margin-bottom:16rpx;">库存不在这页改——点下方按钮去「进货入库」增加库存，销售开单自动减库存，每笔都有流水可查。</view>
+    <button class="btn btn-primary" bindtap="goPurchase">去进货入库</button>
+  </view>
+
+  <!-- SKU 矩阵：每行一个 SKU（颜色+尺码+库存+成本+售价） -->
+  <view class="card" wx:if="{{form.skus.length}}">
+    <view class="card-title between">
+      <view>SKU 列表（共 {{form.skus.length}} 个）</view>
+      <view class="muted small">总库存 {{totalStock}} · 非空 {{nonEmptySkuCount}}</view>
+    </view>
+    <view class="sku-row" wx:for="{{form.skus}}" wx:key="key">
+      <view class="sku-label">
+        <text wx:if="{{item.color || item.size}}">{{item.color || '默认'}}-{{item.size || '默认'}}</text>
+        <text wx:else>默认 SKU</text>
+      </view>
+      <view class="sku-fields">
+        <view class="sku-field">
+          <text class="f-label">库存</text>
+          <input class="f-input" type="number" value="{{item.stock}}"
+            data-key="{{item.key}}" data-f="stock" bindinput="onSkuInput" bindblur="onSkuBlur"
+            disabled="{{!isNew || saving}}" />
+        </view>
+        <view class="sku-field">
+          <text class="f-label">进价</text>
+          <input class="f-input" type="digit" value="{{item.costPrice}}"
+            data-key="{{item.key}}" data-f="costPrice" bindinput="onSkuInput" bindblur="onSkuBlur"  disabled="{{saving}}" />
+        </view>
+        <view class="sku-field">
+          <text class="f-label">售价</text>
+          <input class="f-input" type="digit" value="{{item.price}}"
+            data-key="{{item.key}}" data-f="price" bindinput="onSkuInput" bindblur="onSkuBlur"  disabled="{{saving}}" />
+        </view>
+      </view>
+    </view>
+    <view wx:if="{{!isNew}}" class="form-tip" style="margin-top:12rpx;">编辑态下，库存不允许直接改（请通过进货/销售变动）</view>
+  </view>
+
+  <view class="card empty-mini" wx:else>
+    <view class="empty-txt">添加颜色和尺码后，会自动生成 SKU 列表</view>
+  </view>
+
+  <!-- 状态 -->
+  <view class="card">
+    <view class="form-item" style="border-bottom:none;">
+      <view class="form-label">状态</view>
+      <view class="form-value chips">
+        <view class="chip {{form.status === 'on' ? 'chip-on' : ''}}" data-s="on" bindtap="setStatus">在售</view>
+        <view class="chip {{form.status === 'off' ? 'chip-off' : ''}}" data-s="off" bindtap="setStatus">停售</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="page-footer-space"></view>
+  <view class="footer-bar">
+    <button class="btn btn-danger del-btn" wx:if="{{!isNew}}" bindtap="doDelete" disabled="{{saving}}">停售</button>
+    <button class="btn btn-primary save-btn" bindtap="doSave" disabled="{{saving || loading || loadError}}">{{saving ? '保存中…' : '保存'}}</button>
+  </view>
+  </block>
+</view>

@@ -1,0 +1,9 @@
+{
+  "name": "returnSale",
+  "version": "1.0.0",
+  "description": "销售退货红冲：库存回补+标记已退",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

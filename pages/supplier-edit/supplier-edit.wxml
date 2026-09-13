@@ -1,0 +1,37 @@
+<!-- pages/supplier-edit/supplier-edit.wxml —— 供应商新增/编辑 -->
+<view class="page theme-{{theme}}">
+  <view class="card" wx:if="{{loading}}">档案加载中…</view>
+  <view class="card" wx:elif="{{loadError}}">{{loadError}}，请返回后重新打开。</view>
+  <block wx:else>
+  <view class="card">
+    <view class="form-item">
+      <view class="form-label">名称 *</view>
+      <view class="form-value"><textarea class="input" placeholder="如：广州XX服饰批发" value="{{form.name}}" bindinput="onInput" data-f="name" placeholder-class="ph" style="height:76rpx;"  disabled="{{saving}}" /></view>
+    </view>
+    <view class="form-item">
+      <view class="form-label">联系人</view>
+      <view class="form-value"><textarea class="input" placeholder="可空" value="{{form.contact}}" bindinput="onInput" data-f="contact" placeholder-class="ph" style="height:76rpx;"  disabled="{{saving}}" /></view>
+    </view>
+    <view class="form-item">
+      <view class="form-label">电话</view>
+      <view class="form-value"><input class="input" type="number" placeholder="可空" value="{{form.phone}}" bindinput="onInput" data-f="phone" placeholder-class="ph"  disabled="{{saving}}" /></view>
+    </view>
+    <view class="form-item" style="border-bottom:none;">
+      <view class="form-label">备注</view>
+      <view class="form-value">
+        <textarea class="input" style="height:140rpx;" placeholder="可空，如：主营牛仔裤、每周二到货" value="{{form.remark}}" bindinput="onInput" data-f="remark" placeholder-class="ph"  disabled="{{saving}}" />
+      </view>
+    </view>
+  </view>
+
+  <view class="muted small" style="margin: 20rpx 30rpx;">
+    已有历史进货单的供应商会保留档案，避免往来记录断开。
+  </view>
+
+  <view class="page-footer-space"></view>
+  <view class="footer-bar">
+    <button class="btn btn-danger del-btn" wx:if="{{!isNew}}" bindtap="doDelete" disabled="{{saving}}">删除</button>
+    <button class="btn btn-primary save-btn" bindtap="doSave" disabled="{{saving || loading || loadError}}">{{saving ? '保存中…' : '保存'}}</button>
+  </view>
+  </block>
+</view>

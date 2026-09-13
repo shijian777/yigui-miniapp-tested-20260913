@@ -1,0 +1,3 @@
+/* pages/supplier-edit/supplier-edit.wxss */
+.del-btn { flex: 0 0 180rpx; margin-right: 16rpx; }
+.save-btn { flex: 1; }

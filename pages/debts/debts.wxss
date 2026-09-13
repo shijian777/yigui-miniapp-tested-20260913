@@ -1,0 +1,69 @@
+/* pages/debts/debts.wxss */
+.hero { padding: 36rpx 24rpx; }
+.hero-label { color: #555; font-size: 28rpx; margin-bottom: 10rpx; }
+.hero-amount { font-size: 76rpx; line-height: 1.2; }
+.hero-sub { margin-top: 14rpx; }
+
+.filter .quick-chips { display: flex; }
+.filter .chip {
+  padding: 10rpx 24rpx; background: #f2f3f5; border-radius: 8rpx; font-size: 26rpx;
+  color: #333; margin-right: 16rpx;
+}
+.chip-on { background: #07c160; color: #fff; }
+.date-row { display: flex; align-items: center; margin-top: 20rpx; }
+.date-box {
+  background: #f7f8fa; border-radius: 8rpx; padding: 10rpx 20rpx;
+  font-size: 26rpx; margin: 0 10rpx; min-width: 180rpx; text-align: center;
+}
+
+.range-stat { padding: 22rpx 24rpx; }
+.small-title { font-size: 28rpx; }
+.list-card { padding: 4rpx 24rpx; }
+.empty-mini { padding: 60rpx 24rpx; }
+.empty-txt { text-align: center; color: #999; }
+
+/* Tab segmented */
+.seg { display: flex; padding: 8rpx; gap: 8rpx; }
+.seg-item {
+  flex: 1; text-align: center; padding: 14rpx 0;
+  border-radius: 12rpx; font-size: 28rpx; color: #555;
+}
+.seg-on { background: #07c160; color: #fff; font-weight: 600; }
+
+/* 时间筛选 */
+.quick { display: flex; gap: 12rpx; flex-wrap: wrap; }
+.chip {
+  padding: 8rpx 22rpx; background: #f2f3f5; border-radius: 24rpx;
+  font-size: 24rpx; color: #555;
+}
+.chip-on { background: #07c160; color: #fff; }
+.mt10 { margin-top: 14rpx; }
+.btn-mini {
+  margin-left: 12rpx; padding: 8rpx 18rpx; background: #07c160;
+  color: #fff; border-radius: 8rpx; font-size: 24rpx;
+}
+
+/* Big number */
+.big-num {
+  font-size: 52rpx; font-weight: 800; line-height: 1.2;
+  margin-top: 4rpx;
+}
+
+.small-row { font-size: 26rpx; padding: 6rpx 0; }
+.section-title-inline { font-size: 28rpx; font-weight: 600; color: #333; margin-bottom: 8rpx; }
+.section-sub { color: #999; font-size: 22rpx; font-weight: 400; }
+
+.list-card { padding: 0 24rpx; }
+.debt-row { padding: 22rpx 0; border-bottom: 1rpx solid #f5f5f5; }
+.debt-row:last-child { border-bottom: none; }
+.row-title { font-size: 30rpx; font-weight: 600; }
+.right { text-align: right; }
+.debt-amount { font-size: 32rpx; font-weight: 800; }
+.strong { font-weight: 600; }
+.muted { color: #888; }
+.small { font-size: 24rpx; }
+.red { color: #e64340; }
+.green { color: #07c160; }
+.pad { padding: 24rpx 0 80rpx; }
+.center { text-align: center; }
+.time { margin-left: 12rpx; }

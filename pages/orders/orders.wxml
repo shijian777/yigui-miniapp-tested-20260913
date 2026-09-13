@@ -1,0 +1,62 @@
+<!-- pages/orders/orders.wxml —— 订单流水（销售单+进货单统一按日期查） -->
+<view class="page theme-{{theme}}">
+  <view class="card" wx:if="{{errText}}">{{errText}}</view>
+  <!-- 筛选区 -->
+  <view class="filter card">
+    <view class="type-chips">
+      <view class="chip {{typeFilter === 'all' ? 'chip-on' : ''}}" data-t="all" bindtap="setType">全部</view>
+      <view class="chip {{typeFilter === 'sale' ? 'chip-on' : ''}}" data-t="sale" bindtap="setType">销售单</view>
+      <view class="chip {{typeFilter === 'purchase' ? 'chip-on' : ''}}" data-t="purchase" bindtap="setType">进货单</view>
+    </view>
+    <view class="quick-chips">
+      <view class="chip {{quick === 'today' ? 'chip-on' : ''}}" data-q="today" bindtap="setQuick">今天</view>
+      <view class="chip {{quick === 'yesterday' ? 'chip-on' : ''}}" data-q="yesterday" bindtap="setQuick">昨天</view>
+      <view class="chip {{quick === 'week' ? 'chip-on' : ''}}" data-q="week" bindtap="setQuick">近7天</view>
+      <view class="chip {{quick === 'month' ? 'chip-on' : ''}}" data-q="month" bindtap="setQuick">近30天</view>
+    </view>
+    <view class="date-row">
+      <picker mode="date" value="{{startDate}}" bindchange="onStartChange">
+        <view class="date-box">{{startDate}}</view>
+      </picker>
+      <text class="muted">至</text>
+      <picker mode="date" value="{{endDate}}" bindchange="onEndChange">
+        <view class="date-box">{{endDate}}</view>
+      </picker>
+      <view class="btn-mini" bindtap="doQuery">查询</view>
+    </view>
+  </view>
+
+  <!-- 列表 -->
+  <view class="card list-card" wx:if="{{list.length}}">
+    <view class="list-item" wx:for="{{list}}" wx:key="rowKey" data-id="{{item._id}}" data-type="{{item.type}}" bindtap="goDetail">
+      <view class="order-left">
+        <view class="type-badge {{item.type === 'sale' ? 'b-sale' : 'b-pur'}}">{{item.typeText}}</view>
+      </view>
+      <view class="flex-1">
+        <view class="between order-header">
+          <view class="row-title small-title">{{item.orderNo}}</view>
+          <view class="amount"><text wx:if="{{item.returned}}" class="muted small">原交易 </text>¥{{item.amountText}}</view>
+        </view>
+        <view class="between mt10 order-meta">
+          <view class="muted small">{{item.mainText}}</view>
+          <view class="flex right-mini">
+            <view wx:if="{{item.returned}}" class="tag tag-red">已退货</view>
+            <view class="muted small time">{{item.timeText}}</view>
+          </view>
+        </view>
+        <view class="muted small mt10" wx:if="{{item.itemsText}}">明细：{{item.itemsText}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="card empty-mini" wx:elif="{{!loading}}">
+    <view class="empty-txt">该区间暂无{{typeFilter === 'all' ? '' : (typeFilter === 'sale' ? '销售' : '进货')}}订单</view>
+  </view>
+  <view class="card empty-mini" wx:elif="{{loading}}">
+    <view class="empty-txt">加载中…</view>
+  </view>
+
+  <view class="list-loading" wx:if="{{list.length}}">
+    {{loading ? '加载中…' : (hasMore ? '上拉加载更多' : '— 已全部加载 —')}}
+  </view>
+</view>

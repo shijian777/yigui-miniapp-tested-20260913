@@ -1,0 +1,34 @@
+/* pages/orders/orders.wxss */
+.filter .type-chips { display: flex; }
+.filter .chip {
+  padding: 10rpx 24rpx; background: #f2f3f5; border-radius: 8rpx; font-size: 26rpx;
+  color: #333; margin-right: 16rpx;
+}
+.chip-on { background: #07c160; color: #fff; }
+.quick-chips { display: flex; margin-top: 16rpx; }
+.quick-chips .chip { border-radius: 24rpx; padding: 8rpx 24rpx; font-size: 24rpx; }
+.date-row { display: flex; align-items: center; margin-top: 20rpx; }
+.date-box {
+  background: #f7f8fa; border-radius: 8rpx; padding: 10rpx 20rpx;
+  font-size: 26rpx; margin: 0 10rpx; min-width: 180rpx; text-align: center;
+}
+.order-left { margin-right: 16rpx; }
+.type-badge {
+  width: 64rpx; height: 64rpx; border-radius: 50%; text-align: center;
+  line-height: 64rpx; font-size: 22rpx; color: #fff;
+}
+.b-sale { background: #07c160; }
+.b-pur { background: #ff9900; }
+.small-title { font-size: 28rpx; }
+.amount { font-size: 28rpx; font-weight: 700; color: #222; }
+.right-mini { justify-content: flex-end; }
+.time { margin-left: 12rpx; }
+.empty-mini { padding: 60rpx 24rpx; }
+.empty-txt { text-align: center; color: #999; }
+
+/* 历史欠款说明独占一行，状态与时间保持横向可读。 */
+.order-header { flex-wrap: wrap; gap: 8rpx 16rpx; }
+.order-header .amount { white-space: nowrap; }
+.order-meta { flex-direction: column; align-items: stretch; gap: 8rpx; }
+.order-meta .right-mini { flex-shrink: 0; flex-wrap: wrap; gap: 6rpx; }
+.order-meta .tag, .order-meta .time { white-space: nowrap; }

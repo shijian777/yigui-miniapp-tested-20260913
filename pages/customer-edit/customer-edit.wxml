@@ -1,0 +1,54 @@
+<!-- pages/customer-edit/customer-edit.wxml -->
+<view class="page theme-{{theme}}">
+  <view class="card" wx:if="{{loading}}">档案加载中…</view>
+  <view class="card" wx:elif="{{loadError}}">{{loadError}}，请返回后重新打开。</view>
+  <block wx:else>
+  <view class="card">
+    <view class="form-item">
+      <view class="form-label">姓名<text class="required">*</text></view>
+      <textarea class="input" placeholder="如 张三 / 老顾客" value="{{form.name}}" bindinput="onName" placeholder-class="ph" style="height:76rpx;"  disabled="{{saving}}" />
+    </view>
+    <view class="form-item">
+      <view class="form-label">电话</view>
+      <input class="input" type="number" placeholder="选填，方便催收" value="{{form.phone}}" bindinput="onPhone" placeholder-class="ph"  disabled="{{saving}}" />
+    </view>
+    <view class="form-item">
+      <view class="form-label">微信</view>
+      <textarea class="input" placeholder="选填" value="{{form.wechat}}" bindinput="onWechat" placeholder-class="ph" style="height:76rpx;"  disabled="{{saving}}" />
+    </view>
+    <view class="form-item">
+      <view class="form-label">地址</view>
+      <textarea class="input" style="min-height:88rpx;" auto-height maxlength="-1" placeholder="选填" value="{{form.address}}" bindinput="onAddress" placeholder-class="ph"  disabled="{{saving}}" />
+    </view>
+    <view class="form-item" style="border-bottom:none;">
+      <view class="form-label">备注</view>
+      <textarea class="textarea" placeholder="偏好/忌口/特殊说明等" value="{{form.note}}" bindinput="onNote" maxlength="500" placeholder-class="ph"  disabled="{{saving}}" />
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="form-item" style="border-bottom:none;">
+      <view class="form-label">标签</view>
+      <view class="tags-area">
+        <view class="tag tag-on" wx:for="{{form.tags}}" wx:key="*this" data-index="{{index}}" bindtap="removeTag">
+          {{item}} <view class="ico" style="width:1em;height:1em;display:inline-block;vertical-align:middle;"><view class="ico ic-649f1b6624" style="width:1em;height:1em;"></view></view>
+        </view>
+        <view class="tag tag-suggest" wx:for="{{suggestTags}}" wx:key="*this" data-tag="{{item}}"
+              bindtap="toggleTag" hidden="{{form.tags.indexOf(item) >= 0}}">
+          ＋ {{item}}
+        </view>
+      </view>
+      <view class="row mt10">
+        <input class="tag-input" placeholder="自定义标签后回车" value="{{tagInput}}" bindinput="onTagInput" bindconfirm="addCustomTag" placeholder-class="ph"  disabled="{{saving}}" />
+        <view class="btn-mini" bindtap="addCustomTag">添加</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="page-footer-space"></view>
+
+  <view class="footer-bar">
+    <button class="btn btn-primary submit-btn" bindtap="save" disabled="{{saving || loading || loadError}}">{{isEdit ? '保存修改' : '新建客户'}}</button>
+  </view>
+  </block>
+</view>

@@ -1,0 +1,20 @@
+/* pages/goods/goods.wxss */
+.search-box { display: flex; align-items: center; padding: 0 24rpx; height: 88rpx; margin-top: 20rpx; box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.04); }
+.search-icon { margin-right: 12rpx; }
+.search-input { flex: 1; font-size: 28rpx; }
+.ph { color: #bbb; }
+.search-clear { color: #bbb; padding: 0 8rpx; }
+.type-chips { display: flex; padding: 20rpx 20rpx 0; }
+.chip {
+  padding: 12rpx 36rpx; background: #e9eaec; border-radius: 24rpx; font-size: 26rpx;
+  color: #555; margin-right: 16rpx;
+}
+.chip-on { background: #07c160; color: #fff; }
+.goods-row { padding: 28rpx 0; border-bottom: 1rpx solid #f5f5f5; }
+.goods-row:last-child { border-bottom: none; }
+.sell-price { color: #e64340; font-size: 34rpx; font-weight: 700; }
+.switch-wrap { transform: scale(0.8); transform-origin: right center; }
+.empty-mini { padding: 60rpx 24rpx; }
+.empty-txt { text-align: center; color: #999; }
+.tag-blue { background: #e6f3ff; color: #1976d2; padding: 2rpx 12rpx; margin-left: 8rpx; font-size: 22rpx; }
+.sku-info { color: #1976d2; }

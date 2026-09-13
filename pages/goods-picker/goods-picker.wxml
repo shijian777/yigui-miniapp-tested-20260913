@@ -1,0 +1,34 @@
+<!-- pages/goods-picker/goods-picker.wxml —— 选商品（进货用，单选返回） -->
+<view class="page theme-{{theme}}">
+  <view class="search-box card">
+    <text class="search-icon"><view class="ico" style="width:1em;height:1em;display:inline-block;vertical-align:middle;"><view class="ico ic-184143286c" style="width:1em;height:1em;"></view></view></text>
+    <input class="search-input" placeholder="按名称 / 条码搜索" placeholder-class="ph"
+      value="{{keyword}}" bindinput="onKeyword" autofocus />
+    <text wx:if="{{keyword}}" class="search-clear" bindtap="clearKeyword"><view class="ico" style="width:1em;height:1em;display:inline-block;vertical-align:middle;"><view class="ico ic-649f1b6624" style="width:1em;height:1em;"></view></view></text>
+  </view>
+
+  <view class="card list-card" wx:if="{{list.length}}">
+    <view class="pick-row" wx:for="{{list}}" wx:key="_id" data-index="{{index}}" bindtap="onPick">
+      <view class="flex-1">
+        <view class="row-title">
+          {{item.name}}
+          <text wx:if="{{item.colors && item.colors.length > 0}}" class="badge badge-on">色码</text>
+        </view>
+        <view class="muted small mt10">
+          {{item.category || '未分类'}} · 售价 ¥{{item.price}} · 成本 ¥{{item.costPrice}}
+        </view>
+      </view>
+      <view class="right">
+        <view class="pick-stock">库存 {{item.totalStock !== undefined ? item.totalStock : item.stock}} {{item.unit}}</view>
+        <view class="pick-btn">选择</view>
+      </view>
+    </view>
+  </view>
+  <view class="card empty-mini" wx:elif="{{!loading}}">
+    <view class="empty-txt">{{keyword ? '未找到，去商品管理新建吧' : '没有在售商品'}}</view>
+  </view>
+  <view class="card empty-mini" wx:elif="{{loading}}">
+    <view class="empty-txt">加载中…</view>
+  </view>
+  <view class="list-loading">{{list.length ? (hasMore ? '上拉加载更多' : '') : ''}}</view>
+</view>

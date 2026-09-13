@@ -1,0 +1,6 @@
+/* pages/suppliers/suppliers.wxss */
+.sup-row { display: flex; align-items: center; padding: 24rpx 0; border-bottom: 1rpx solid #f5f5f5; }
+.sup-row:last-child { border-bottom: none; }
+.sup-arrow { color: #ccc; font-size: 40rpx; margin-left: 12rpx; }
+.empty-mini { padding: 60rpx 24rpx; }
+.empty-txt { text-align: center; color: #999; }

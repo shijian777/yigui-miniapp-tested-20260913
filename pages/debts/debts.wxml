@@ -1,0 +1,143 @@
+<!-- pages/debts/debts.wxml -->
+<view class="page theme-{{theme}}">
+  <view class="card" wx:if="{{errText}}">{{errText}}</view>
+  <!-- 顶部汇总 -->
+  <view class="card">
+    <view class="between">
+      <view>
+        <view class="muted small">全期待收总额</view>
+        <view class="big-num red strong">¥{{summary.totalDebt}}</view>
+        <view class="muted small mt10">
+          共 {{summary.totalCount}} 笔未结清 · 累计应收 ¥{{summary.totalAmountDue}} · 已收 ¥{{summary.totalReceived}}
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- Tab 切换 -->
+  <view class="seg card">
+    <view class="seg-item {{tab === 'list' ? 'seg-on' : ''}}" data-t="list" bindtap="setTab">按单</view>
+    <view class="seg-item {{tab === 'byCustomer' ? 'seg-on' : ''}}" data-t="byCustomer" bindtap="setTab">按客户</view>
+  </view>
+
+  <!-- 时间筛选 -->
+  <view class="card" wx:if="{{tab === 'list'}}">
+    <view class="between">
+      <view class="quick">
+        <view class="chip {{quick === 'today' ? 'chip-on' : ''}}" data-q="today" bindtap="setQuick">今日</view>
+        <view class="chip {{quick === 'week' ? 'chip-on' : ''}}" data-q="week" bindtap="setQuick">7天</view>
+        <view class="chip {{quick === 'month' ? 'chip-on' : ''}}" data-q="month" bindtap="setQuick">30天</view>
+        <view class="chip {{quick === 'all' ? 'chip-on' : ''}}" data-q="all" bindtap="setQuick">全部</view>
+      </view>
+    </view>
+    <view class="between mt10">
+      <picker mode="date" value="{{startDate}}" bindchange="onStartChange">
+        <view class="muted small">从 {{startDate}}</view>
+      </picker>
+      <view class="muted small">—</view>
+      <picker mode="date" value="{{endDate}}" bindchange="onEndChange">
+        <view class="muted small">至 {{endDate}}</view>
+      </picker>
+      <view class="btn-mini" bindtap="doQuery">查询</view>
+    </view>
+  </view>
+
+  <!-- 按单 Tab -->
+  <block wx:if="{{tab === 'list'}}">
+    <view class="card">
+      <view class="section-title-inline">区间内汇总</view>
+      <view class="between small-row">
+        <text class="muted">新增欠款 {{rangeStats.count}} 笔</text>
+        <text>应收 ¥{{rangeStats.amountDue}}</text>
+      </view>
+      <view class="between small-row">
+        <text class="muted">已收回</text>
+        <text class="green">¥{{rangeStats.received}}</text>
+      </view>
+      <view class="between small-row">
+        <text class="muted">净额仍欠</text>
+        <text class="red strong">¥{{rangeStats.debt}}</text>
+      </view>
+    </view>
+
+    <view class="section-title">待收清单（按欠款额倒序）
+      <text class="section-sub">（共 {{list.length}} 单）</text>
+    </view>
+    <view class="card" wx:if="{{list.length}}">
+      <view class="debt-row" wx:for="{{list}}" wx:key="rowKey" data-id="{{item._id}}" bindtap="goDetail">
+        <view class="between">
+          <view class="flex-1">
+            <view class="row-title">{{item.orderNo}}</view>
+            <view class="muted small" wx:if="{{item.hasCustomer}}">顾客：{{item.customerText}}</view>
+            <view class="muted small" wx:else>未填顾客信息</view>
+            <view class="muted small" wx:if="{{item.remark}}">备注：{{item.remark}}</view>
+          </view>
+          <view class="right">
+            <view class="debt-amount red strong">¥{{item.debtText}}</view>
+            <view class="muted small">应收 ¥{{item.amountDueText}} / 实收 ¥{{item.receivedText}}</view>
+          </view>
+        </view>
+        <view class="muted small mt10">{{item.timeText}}</view>
+      </view>
+    </view>
+    <view class="card empty-mini" wx:elif="{{!loading}}">
+      <view class="empty-txt">区间内没有待收欠款 </view>
+    </view>
+
+    <view class="section-title">已结清（区间内）
+      <text class="section-sub">（共 {{clearedList.length}} 单）</text>
+    </view>
+    <view class="card" wx:if="{{clearedList.length}}">
+      <view class="debt-row" wx:for="{{clearedList}}" wx:key="rowKey" data-id="{{item._id}}" bindtap="goDetail">
+        <view class="between">
+          <view class="flex-1">
+            <view class="row-title">{{item.orderNo}}</view>
+            <view class="muted small" wx:if="{{item.hasCustomer}}">顾客：{{item.customerText}}</view>
+          </view>
+          <view class="right">
+            <view class="green strong">¥{{item.amountDueText}}</view>
+            <view class="muted small">{{item.timeText}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </block>
+
+  <!-- 按客户 Tab -->
+  <block wx:elif="{{tab === 'byCustomer'}}">
+    <view class="card">
+      <view class="between">
+        <view>
+          <view class="muted small">欠款顾客</view>
+          <view class="big-num red strong">{{customerAgg.list.length}} 人</view>
+        </view>
+        <view class="right">
+          <view class="muted small">累计仍欠</view>
+          <view class="big-num red strong">¥{{customerAgg.totalDebt}}</view>
+        </view>
+      </view>
+    </view>
+    <view class="card list-card" wx:if="{{customerAgg.list.length}}">
+      <view class="debt-row" wx:for="{{customerAgg.list}}" wx:key="customerKey" data-id="{{item.customerId}}" bindtap="goCustomer">
+        <view class="between">
+          <view class="flex-1">
+            <view class="row-title">{{item.customerName}}
+              <text wx:if="{{!item.customerId}}" class="muted small">（未建档）</text>
+            </view>
+            <view class="muted small" wx:if="{{item.customerPhone}}"> {{item.customerPhone}}</view>
+            <view class="muted small">共 {{item.orderCount}} 笔欠款单</view>
+          </view>
+          <view class="right">
+            <view class="debt-amount red strong">¥{{item.totalDebtText}}</view>
+            <view class="muted small">仍未结清</view>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view class="card empty-mini" wx:elif="{{!loading}}">
+      <view class="empty-txt"> 没有顾客欠款</view>
+    </view>
+  </block>
+
+  <view class="muted center small pad">{{loading ? '加载中…' : '下拉可刷新'}}</view>
+</view>

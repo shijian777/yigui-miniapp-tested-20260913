@@ -1,0 +1,75 @@
+<!-- pages/statement/statement.wxml -->
+<view class="page theme-{{theme}}">
+  <view class="card" wx:if="{{errText}}">{{errText}}</view>
+  <!-- 客户 + 日期 -->
+  <view class="card">
+    <view class="between">
+      <view class="flex-1">
+        <view class="muted small">客户</view>
+        <view class="row-title" wx:if="{{customerId}}">{{customerLabel}}</view>
+        <view class="muted small" wx:elif="{{customerName}}">{{customerName}}（未建档）</view>
+        <view class="muted small" wx:else>未选客户，先选一个</view>
+      </view>
+      <view class="chip {{customerId ? 'chip-on' : ''}}" bindtap="pickCustomer">{{customerId ? '换一位' : '选客户'}}</view>
+      <view wx:if="{{customerId || customerName}}" class="chip" bindtap="clearCustomer" style="margin-left:8rpx;">清除</view>
+    </view>
+    <view class="between mt10">
+      <view class="quick">
+        <view class="chip {{quick === 'today' ? 'chip-on' : ''}}" data-q="today" bindtap="setQuick">今日</view>
+        <view class="chip {{quick === 'week' ? 'chip-on' : ''}}" data-q="week" bindtap="setQuick">7天</view>
+        <view class="chip {{quick === 'month' ? 'chip-on' : ''}}" data-q="month" bindtap="setQuick">30天</view>
+        <view class="chip {{quick === 'all' ? 'chip-on' : ''}}" data-q="all" bindtap="setQuick">全部</view>
+      </view>
+    </view>
+    <view class="between mt10">
+      <picker mode="date" value="{{startDate}}" bindchange="onStartChange">
+        <view class="muted small">从 {{startDate}}</view>
+      </picker>
+      <view class="muted small">—</view>
+      <picker mode="date" value="{{endDate}}" bindchange="onEndChange">
+        <view class="muted small">至 {{endDate}}</view>
+      </picker>
+      <view class="btn-mini" bindtap="doQuery">查询</view>
+    </view>
+  </view>
+
+  <!-- 汇总 -->
+  <view class="card" wx:if="{{summary}}">
+    <view class="section-title-inline">汇总</view>
+    <view class="sum-row"><text class="muted">销售单数</text><text>{{summary.completed.count}} 笔（含退货 {{summary.returned.count}}）</text></view>
+    <view class="sum-row"><text class="muted">销售净额</text><text class="strong">¥{{summary.netSales}}</text></view>
+    <view class="sum-row"><text class="muted">已收款</text><text class="green strong">¥{{summary.totalReceived}}</text></view>
+    <view class="sum-row"><text class="muted">仍欠款</text><text class="red strong">¥{{summary.outstandingDebt}}</text></view>
+    <view class="muted small mt10">汇总仅计未退货订单；退货记录保留在明细中，便于核对。</view>
+  </view>
+
+  <view class="card empty-mini" wx:if="{{!summary && !loading}}">
+    <view class="empty-txt">{{customerId || customerName ? '点击「查询」加载对账单' : '请先选客户'}}</view>
+  </view>
+
+  <!-- 列表 -->
+  <view class="section-title" wx:if="{{list.length}}">订单明细
+    <text class="muted small">（{{list.length}} 笔）</text>
+  </view>
+  <view class="card" wx:if="{{list.length}}">
+    <view class="stmt-row" wx:for="{{list}}" wx:key="_id" data-id="{{item._id}}" bindtap="goDetail">
+      <view class="between">
+        <view class="flex-1">
+          <view class="row-title">
+            {{item.orderNo}}
+            <text wx:if="{{item.status === 'returned'}}" class="badge badge-red">已退货</text>
+          </view>
+          <view class="muted small mt10">{{item.timeText}}</view>
+          <view class="muted small" wx:if="{{item.remark}}">备注：{{item.remark}}</view>
+        </view>
+        <view class="right">
+          <view class="{{item.status === 'returned' ? 'muted' : ''}}">
+            ¥{{item.amountText}}
+          </view>
+          <view class="muted small" wx:if="{{item.received > 0}}">收 ¥{{item.receivedText}}</view>
+          <view class="red small" wx:if="{{item.debt > 0}}">欠 ¥{{item.debtText}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

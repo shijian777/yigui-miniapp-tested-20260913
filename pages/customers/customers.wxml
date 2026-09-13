@@ -1,0 +1,46 @@
+<!-- pages/customers/customers.wxml -->
+<view class="page theme-{{theme}}">
+  <view class="search-wrap">
+    <view class="search-box card">
+      <text class="search-icon"><view class="ico" style="width:1em;height:1em;display:inline-block;vertical-align:middle;"><view class="ico ic-184143286c" style="width:1em;height:1em;"></view></view></text>
+      <input class="search-input" placeholder="按姓名/电话/微信搜索" placeholder-class="ph"
+        value="{{keyword}}" bindinput="onKeyword" />
+      <text wx:if="{{keyword}}" class="search-clear" bindtap="clearKeyword"><view class="ico" style="width:1em;height:1em;display:inline-block;vertical-align:middle;"><view class="ico ic-649f1b6624" style="width:1em;height:1em;"></view></view></text>
+    </view>
+  </view>
+
+  <view class="card list-card" wx:if="{{list.length}}">
+    <view class="cust-row" wx:for="{{list}}" wx:key="_id" data-id="{{item._id}}"
+          bindtap="onTapRow">
+      <view class="between">
+        <view class="flex-1">
+          <view class="row-title">
+            {{item.name}}
+            <text wx:if="{{item.totalDebt > 0}}" class="badge badge-red">欠 ¥{{item.totalDebtText}}</text>
+          </view>
+          <view class="muted small mt10">
+            <text wx:if="{{item.phone}}"> {{item.phone}}</text>
+            <text wx:if="{{item.wechat}}" style="margin-left:12rpx;"> {{item.wechat}}</text>
+            <text wx:if="{{!item.phone && !item.wechat}}" class="muted">未填联系方式</text>
+          </view>
+        </view>
+        <view class="right">
+          <view class="cust-spent green">¥{{item.totalSpentText}}</view>
+          <view class="muted small">{{item.totalOrders || 0}} 笔</view>
+        </view>
+      </view>
+      <view wx:if="{{item.tags.length}}" class="tag-line">
+        <text class="tag" wx:for="{{item.tags}}" wx:key="*this" wx:for-item="t">{{t}}</text>
+      </view>
+      <view class="muted small" wx:if="{{item.lastOrderAt}}">最近：{{item.lastOrderAtText || ''}}</view>
+      <view wx:if="{{!_asPicker}}" class="cust-actions">
+        <view catchtap="goDetail" data-id="{{item._id}}" class="cust-action">更多</view>
+      </view>
+    </view>
+  </view>
+  <view class="card empty-mini" wx:elif="{{!loading}}">
+    <view class="empty-txt">{{keyword ? '没找到，去新建吧' : '还没有客户档案'}}</view>
+  </view>
+
+  <button class="btn btn-primary add-btn" bindtap="goAdd">＋ 新建客户</button>
+</view>

@@ -1,0 +1,68 @@
+<!-- pages/stats/stats.wxml —— 统计报表 -->
+<view class="page theme-{{theme}}">
+  <view class="card" wx:if="{{errText}}">{{errText}}</view>
+  <!-- 日期区间 -->
+  <view class="card filter">
+    <view class="quick-chips">
+      <view class="chip {{quick === 'today' ? 'chip-on' : ''}}" data-q="today" bindtap="setQuick">今天</view>
+      <view class="chip {{quick === 'yesterday' ? 'chip-on' : ''}}" data-q="yesterday" bindtap="setQuick">昨天</view>
+      <view class="chip {{quick === 'week' ? 'chip-on' : ''}}" data-q="week" bindtap="setQuick">近7天</view>
+      <view class="chip {{quick === 'month' ? 'chip-on' : ''}}" data-q="month" bindtap="setQuick">近30天</view>
+      <view class="chip {{quick === 'custom' ? 'chip-on' : ''}}" data-q="custom" bindtap="setQuick">自定义</view>
+    </view>
+    <view class="date-row">
+      <picker mode="date" value="{{startDate}}" bindchange="onStartChange">
+        <view class="date-box">{{startDate}}</view>
+      </picker>
+      <text class="muted">至</text>
+      <picker mode="date" value="{{endDate}}" bindchange="onEndChange">
+        <view class="date-box">{{endDate}}</view>
+      </picker>
+      <view class="btn-mini" bindtap="load">统计</view>
+    </view>
+  </view>
+
+  <!-- 指标卡 -->
+  <view class="card stat-hero">
+    <view class="hero-label">销售额（元）</view>
+    <view class="hero-num">{{stat.salesAmount}}</view>
+    <view class="hero-sub">已剔除退货单 · 订单 {{stat.salesCount}} 笔 · 共 {{stat.soldQty}} 件</view>
+  </view>
+
+  <view class="stat-grid">
+    <view class="card cell">
+      <view class="cell-label">毛利（元）</view>
+      <view class="cell-num {{stat.grossProfit >= 0 ? 'green' : 'red'}}">{{stat.grossProfitText}}</view>
+    </view>
+    <view class="card cell">
+      <view class="cell-label">销售成本（元）</view>
+      <view class="cell-num">{{stat.saleCost}}</view>
+    </view>
+    <view class="card cell">
+      <view class="cell-label">进货额（元）</view>
+      <view class="cell-num">{{stat.purchaseAmount}}</view>
+    </view>
+    <view class="card cell">
+      <view class="cell-label">进货单数</view>
+      <view class="cell-num">{{stat.purchaseCount}}<text class="cell-unit">笔</text></view>
+    </view>
+  </view>
+  <view class="muted small" style="margin: 10rpx 30rpx 0;">退货单 {{stat.returnedCount}} 笔（退货额未计入销售额）</view>
+
+  <!-- TOP5 -->
+  <view class="section-title">TOP5 商品（按销售额）</view>
+  <view class="card" wx:if="{{stat.topGoods.length}}">
+    <view class="top-row" wx:for="{{stat.topGoods}}" wx:key="goodsId">
+      <view class="rank {{index < 3 ? 'rank-hot' : ''}}">{{index + 1}}</view>
+      <view class="flex-1">
+        <view class="top-name">{{item.name}}</view>
+        <view class="muted small">销量 {{item.qty}}{{item.unit}}</view>
+      </view>
+      <view class="top-amount">¥{{item.amountText}}</view>
+    </view>
+  </view>
+  <view class="card empty-mini" wx:elif="{{!loading}}">
+    <view class="empty-txt">该区间没有销售记录</view>
+  </view>
+  <view class="list-loading">{{loading ? '统计中…' : ''}}</view>
+</view>

@@ -1,0 +1,9 @@
+{
+  "name": "slowMover",
+  "version": "1.0.0",
+  "description": "滞销分析：列出 N 天未售的款号",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

@@ -1,0 +1,26 @@
+<!-- pages/receipt/receipt.wxml —— 电子小票（canvas 绘制 -> 预览/保存/转发/打印） -->
+<view class="page theme-{{theme}}">
+  <view class="receipt-wrap" hidden="{{!order}}">
+    <canvas type="2d" id="receiptCanvas" class="receipt-canvas" style="height:{{canvasHeight}}px;"></canvas>
+    <view class="muted center small" style="padding:16rpx 0 8rpx;">长按上方图片无法直接保存时，请用下方按钮保存</view>
+  </view>
+
+  <view class="card empty-mini" wx:if="{{!order && !loading}}">
+    <view class="empty-txt">{{errText || '订单不存在或不是销售单'}}</view>
+    <button class="btn btn-plain" bindtap="goBack" style="margin-top:20rpx;">返回</button>
+  </view>
+
+  <view class="card empty-mini" wx:if="{{loading}}">
+    <view class="empty-txt">正在绘制小票…</view>
+  </view>
+
+  <view wx:if="{{order && !canvasReady}}" class="card"><text>{{errText || '正在绘制小票…'}}</text><button class="btn btn-plain" bindtap="retryCanvas">重新绘制</button></view>
+
+  <view class="page-footer-space" wx:if="{{order}}"></view>
+
+  <view class="footer-bar" wx:if="{{order}}">
+    <button class="btn btn-plain act" bindtap="saveImage" disabled="{{imageBusy || !canvasReady}}">保存到相册</button>
+    <button class="btn btn-plain act" bindtap="shareImage" disabled="{{imageBusy || !canvasReady}}">转发给顾客</button>
+    <button class="btn btn-primary act" bindtap="goPrinter">蓝牙打印</button>
+  </view>
+</view>

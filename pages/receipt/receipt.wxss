@@ -1,0 +1,10 @@
+/* pages/receipt/receipt.wxss */
+.receipt-wrap {
+  margin: 20rpx; background: #fff; border-radius: 8rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.06); padding: 24rpx 12rpx;
+}
+.receipt-canvas { width: 100%; display: block; }
+.empty-mini { padding: 80rpx 24rpx; }
+.empty-txt { text-align: center; color: #999; }
+.footer-bar .act { flex: 1; }
+.footer-bar .act + .act { margin-left: 16rpx; }

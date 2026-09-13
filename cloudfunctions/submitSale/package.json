@@ -1,0 +1,9 @@
+{
+  "name": "submitSale",
+  "version": "1.0.0",
+  "description": "销售开单：事务扣库存+建单+流水",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

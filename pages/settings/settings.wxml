@@ -1,0 +1,113 @@
+<!-- pages/settings/settings.wxml —— 设置：店名/电话/地址/小票备注/默认支付/低库存阈值/蓝牙 -->
+<view class="page theme-{{theme}}">
+  <view class="card">
+    <view class="form-item">
+      <view class="form-label">店名</view>
+      <view class="form-value"><textarea class="input" style="height:76rpx;" maxlength="-1" placeholder="将显示在小票顶部" value="{{form.storeName}}" bindinput="onInput" data-f="storeName" placeholder-class="ph" /></view>
+    </view>
+    <view class="form-item">
+      <view class="form-label">电话</view>
+      <view class="form-value"><textarea class="input" style="height:76rpx;" maxlength="-1" placeholder="选填" value="{{form.phone}}" bindinput="onInput" data-f="phone" placeholder-class="ph" /></view>
+    </view>
+    <view class="form-item">
+      <view class="form-label">地址</view>
+      <view class="form-value"><textarea class="input" auto-height maxlength="-1" placeholder="选填" value="{{form.address}}" bindinput="onInput" data-f="address" placeholder-class="ph" style="min-height:88rpx;" /></view>
+    </view>
+    <view class="form-item">
+      <view class="form-label">小票备注</view>
+      <view class="form-value">
+        <textarea class="input" style="height:120rpx;" placeholder="显示在小票底部，如：支持7天无理由退换" value="{{form.receiptNote}}" bindinput="onInput" data-f="receiptNote" placeholder-class="ph" />
+      </view>
+    </view>
+    <view class="form-item">
+      <view class="form-label">默认支付方式</view>
+      <view class="form-value chips">
+        <view class="chip {{form.defaultPayment === 'cash' ? 'chip-on' : ''}}" data-p="cash" bindtap="setPayment">现金</view>
+        <view class="chip {{form.defaultPayment === 'wechat' ? 'chip-on' : ''}}" data-p="wechat" bindtap="setPayment">微信</view>
+        <view class="chip {{form.defaultPayment === 'alipay' ? 'chip-on' : ''}}" data-p="alipay" bindtap="setPayment">支付宝</view>
+        <view class="chip {{form.defaultPayment === 'credit' ? 'chip-on' : ''}}" data-p="credit" bindtap="setPayment">记账</view>
+      </view>
+    </view>
+    <view class="form-item">
+      <view class="form-label">低库存阈值</view>
+      <view class="form-value between">
+        <textarea class="input" style="width:160rpx;height:76rpx;" maxlength="-1" value="{{form.lowStockThresholdStr}}" bindinput="onInput" data-f="lowStockThresholdStr" />
+        <text class="muted small">件以下首页预警</text>
+      </view>
+    </view>
+    <view class="form-item" style="border-bottom:none;">
+      <view class="form-label">二维码占位</view>
+      <view class="form-value between">
+        <text class="muted small">小票底部画占位框（暂无真实二维码）</text>
+        <switch checked="{{form.showQrPlaceholder}}" bindchange="onQrSwitch" color="#07c160" />
+      </view>
+    </view>
+  </view>
+
+  <view class="section-title">外观</view>
+  <view class="card">
+    <view class="form-item" style="border-bottom:none;">
+      <view class="form-label">主题</view>
+      <view class="form-value">
+        <view class="theme-switch">
+          <view class="theme-switch-item {{themeRaw==='auto'?'on':''}}" data-t="auto" bindtap="setTheme">跟随系统</view>
+          <view class="theme-switch-item {{themeRaw==='light'?'on':''}}" data-t="light" bindtap="setTheme">浅色</view>
+          <view class="theme-switch-item {{themeRaw==='dark'?'on':''}}" data-t="dark" bindtap="setTheme">深色</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="section-title">打印与设备</view>
+  <view class="card">
+    <view class="list-item between" bindtap="goPrinter">
+      <view class="flex-1">
+        <view class="row-title"><view class="ico" style="width:1em;height:1em;display:inline-block;vertical-align:middle;"><view class="ico ic-895022b80e" style="width:1em;height:1em;"></view></view> 蓝牙打印机</view>
+        <view class="muted small mt10">搜索/连接 58mm 热敏打印机（佳博、芯烨等 BLE 机型）</view>
+      </view>
+      <view class="sup-arrow">›</view>
+    </view>
+  </view>
+
+  <view class="section-title">数据与安全</view>
+  <view class="card">
+    <view class="muted small" style="line-height:1.7;">
+      · 数据保存在你手机微信本地存储（无需服务器、不会自动同步到云端）<br />
+      · 集合：商品 / 客户 / 供应商 / 销售单 / 进货单 / 库存流水 / 设置<br />
+      · <text class="warn">为防"清理微信缓存"或换手机导致数据丢失，请定期导出备份</text>
+    </view>
+  </view>
+
+  <view class="section-title">数据备份与恢复</view>
+  <view class="card">
+    <view class="form-item" style="border-bottom:none;">
+      <view class="form-value">
+        <view wx:if="{{backupError}}" class="warn">{{backupError}}</view>
+        <view wx:else class="muted small" style="margin-bottom:16rpx;">
+          当前数据：商品 {{backupStats.goods || 0}} · 客户 {{backupStats.customers || 0}} · 供应商 {{backupStats.suppliers || 0}}<br />
+          销售单 {{backupStats.sales_orders || 0}} · 进货单 {{backupStats.purchase_orders || 0}} · 设置 {{backupStats.settings || 0}}
+        </view>
+        <view class="flex-row" style="gap:16rpx;">
+          <button class="btn btn-primary flex-1" bindtap="doExport" disabled="{{backupBusy || backupSharing || saving}}">{{backupBusy ? '处理中…' : '生成备份'}}</button>
+          <button class="btn btn-secondary flex-1" bindtap="doImport" disabled="{{backupBusy || backupSharing || saving}}">导入恢复</button>
+        </view>
+        <view wx:if="{{lastBackupPath}}" style="margin-top:16rpx;">
+          <view class="muted small" style="line-height:1.6;word-break:break-all;">{{lastBackupName}}<br />生成于 {{lastBackupAt}}，仅包含当时已保存的数据。</view>
+          <view wx:if="{{backupStale}}" class="warn" style="margin-top:8rpx;">账本已有变更，请重新生成后分享。原文件仍保留。</view>
+          <button class="btn btn-primary" style="margin-top:12rpx;" bindtap="shareBackup" disabled="{{backupBusy || backupSharing || saving || backupStale}}">{{backupSharing ? '分享中…' : '保存/分享备份'}}</button>
+        </view>
+        <view wx:if="{{backupMessage}}" class="muted small" style="margin-top:12rpx;line-height:1.5;">{{backupMessage}}</view>
+        <view class="muted small" style="margin-top:12rpx;line-height:1.5;">
+          先生成文件，再点击“保存/分享备份”，把文件保存到电脑或发送给自己。导入支持“覆盖”或“合并”，相同记录有冲突时会停止合并。
+        </view>
+        <button class="btn btn-secondary" style="margin-top:16rpx;" bindtap="undoImport" disabled="{{backupBusy || backupSharing || saving}}">恢复到上次导入前</button>
+      </view>
+    </view>
+  </view>
+
+  <view class="page-footer-space"></view>
+  <view class="muted small" wx:if="{{settingsDirty}}">有未保存的修改</view>
+  <view class="footer-bar">
+    <button class="btn btn-primary" bindtap="save" disabled="{{saving || backupBusy || backupSharing || loadingSettings}}">{{saving ? '保存中…' : '保存设置'}}</button>
+  </view>
+</view>

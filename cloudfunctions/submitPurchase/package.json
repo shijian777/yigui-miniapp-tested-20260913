@@ -1,0 +1,9 @@
+{
+  "name": "submitPurchase",
+  "version": "1.0.0",
+  "description": "进货入库：事务加库存+加权平均成本+建单+流水",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

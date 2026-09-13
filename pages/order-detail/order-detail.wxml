@@ -1,0 +1,76 @@
+<!-- pages/order-detail/order-detail.wxml —— 订单详情 -->
+<view class="page theme-{{theme}}">
+  <view class="card" wx:if="{{doc}}">
+    <view class="between">
+      <view class="type-title">{{typeText}}单</view>
+      <view wx:if="{{doc.status === 'returned'}}" class="tag tag-red" style="margin-left:0;">已退货</view>
+      <view wx:else class="tag tag-green" style="margin-left:0;">正常</view>
+    </view>
+    <view class="muted small mt10" wx:if="{{doc.status === 'returned'}}">本单已整单退货，以下为原交易记录。<text wx:if="{{doc.debt > 0}}">退货前欠款已取消，不再计入待收。</text></view>
+    <view class="info-row"><text class="muted">单号</text><text>{{doc.orderNo}}</text></view>
+    <view class="info-row"><text class="muted">时间</text><text>{{timeText}}</text></view>
+    <block wx:if="{{isSale}}">
+      <view class="info-row"><text class="muted">{{doc.status === 'returned' ? '原支付方式' : '支付方式'}}</text><text>{{doc.paymentMethodText || paymentText}}</text></view>
+      <view class="info-row"><text class="muted">{{doc.status === 'returned' ? '原交易应收' : '应收'}}</text><text class="strong">¥{{money.amountDue}}</text></view>
+      <view class="info-row"><text class="muted">{{doc.status === 'returned' ? '退货前实收' : '实收'}}</text><text>¥{{money.received}}</text></view>
+      <view class="info-row" wx:if="{{doc.change > 0}}"><text class="muted">{{doc.status === 'returned' ? '原找零' : '找零'}}</text><text class="green">¥{{money.change}}</text></view>
+      <view class="info-row" wx:if="{{doc.debt > 0}}"><text class="muted">{{doc.status === 'returned' ? '退货前欠款' : '欠款'}}</text><text class="{{doc.status === 'returned' ? 'muted' : 'red strong'}}">¥{{money.debt}}<text wx:if="{{doc.status === 'returned'}}">（已取消）</text></text></view>
+      <view class="info-row" wx:if="{{doc.discountPct < 100 || doc.eraseAmount > 0}}">
+        <text class="muted">优惠</text>
+        <text>折扣 {{doc.discountPct}}%（省¥{{money.discount}}）{{doc.eraseAmount > 0 ? '，抹零¥' + money.erase : ''}}</text>
+      </view>
+    </block>
+    <block wx:else>
+      <view class="info-row"><text class="muted">供应商</text><text>{{doc.supplierName || '散货'}}</text></view>
+      <view class="info-row"><text class="muted">进货总额</text><text class="strong">¥{{money.totalAmount}}</text></view>
+    </block>
+    <view class="info-row" wx:if="{{doc.remark}}"><text class="muted">备注</text><text class="flex-1">{{doc.remark}}</text></view>
+    <view class="info-row" wx:if="{{doc.status === 'returned'}}">
+      <text class="muted">退货时间</text><text>{{returnedAtText}}</text>
+    </view>
+    <view class="info-row" wx:if="{{doc.status === 'returned' && doc.returnReason}}">
+      <text class="muted">退货原因</text><text class="flex-1">{{doc.returnReason}}</text>
+    </view>
+  </view>
+
+  <!-- 明细 -->
+  <view class="section-title">明细（{{lines.length}} 项）</view>
+  <view class="card" wx:if="{{lines.length}}">
+    <view class="line" wx:for="{{lines}}" wx:key="index">
+      <view class="between">
+        <view class="flex-1 line-name">{{item.name}}</view>
+        <view class="line-amount">¥{{item.amountText}}</view>
+      </view>
+      <view class="muted small mt10" wx:if="{{isSale}}">
+        ¥{{item.priceText}} × {{item.qty}}{{item.unit}} · 成本 ¥{{item.costText}}
+      </view>
+      <view class="muted small mt10" wx:else>
+        ¥{{item.priceText}} × {{item.qty}}{{item.unit}}
+      </view>
+    </view>
+  </view>
+  <view class="card" wx:else>
+    <view class="empty-txt">本单没有明细记录（可能是旧版本录入的单据，不影响库存与金额）</view>
+  </view>
+
+  <!-- 补收卡参与页面滚动，避免遮住底部退货和小票入口。 -->
+  <view class="card debt-settlement" wx:if="{{isSale && doc && doc.status === 'completed' && doc.debt > 0}}">
+    <view class="between settlement-info">
+      <view>
+        <view class="muted small">欠款</view>
+        <view class="red strong">¥{{money.debt}}</view>
+      </view>
+      <view wx:if="{{doc.customerName}}" class="muted small right">{{doc.customerName}}<text wx:if="{{doc.customerPhone}}"> · {{doc.customerPhone}}</text></view>
+    </view>
+    <button class="btn btn-primary settlement-button" bindtap="doSettleDebt" disabled="{{returning || settling}}">{{settling ? '处理中…' : '补收余款'}}</button>
+  </view>
+
+  <view class="page-footer-space"></view>
+
+  <!-- 操作栏（仅销售单且未退货时可用） -->
+  <view class="footer-bar" wx:if="{{isSale && doc && doc.status !== 'returned'}}">
+    <button class="btn btn-plain act" bindtap="goReceipt">电子小票</button>
+    <button class="btn btn-plain act" bindtap="goPrinter">蓝牙打印</button>
+    <button class="btn btn-danger act" bindtap="doReturn" disabled="{{returning || settling}}">退货</button>
+  </view>
+</view>

@@ -1,0 +1,360 @@
+<!-- pages/index/index.wxml —— 首页仪表盘（高级感版） -->
+<view class="page theme-{{theme}}">
+
+  <!-- 顶部 Hero：紫罗兰青渐变 + 装饰光斑 + 网格 -->
+  <view class="hero">
+    <view class="hero-blob hero-blob-1"></view>
+    <view class="hero-blob hero-blob-2"></view>
+    <view class="hero-blob hero-blob-3"></view>
+    <view class="hero-grid"></view>
+    <view class="hero-inner">
+      <view class="between hero-top">
+        <view>
+          <view class="hero-date">{{dateText}}</view>
+          <view class="hero-greet">{{greetText}}</view>
+        </view>
+        <view class="hero-mark">
+          <view class="hero-mark-i">
+            <view class="ico ico-l" style="width:48rpx;height:48rpx;fill:#fff;stroke:none;">
+              <view class="ico ic-44eb9f0ebf" style="width:48rpx;height:48rpx;"></view>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class="hero-balance">
+        <view class="hero-balance-label">今日销售（元）</view>
+        <view class="hero-balance-num">¥{{stat.salesAmount}}</view>
+        <view class="hero-balance-sub">
+          <text class="hero-dot"></text>{{stat.salesCount}} 笔订单 · {{stat.soldQty}} 件
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 今日概览：销量 + 退货 -->
+  <view class="stat-grid">
+    <view class="card stat-cell" bindtap="goStats">
+      <view class="stat-cell-hd">
+        <view class="stat-chip stat-chip-c">
+          <view class="ico ic-217b9a2e65" style="width:28rpx;height:28rpx;"></view>
+        </view>
+        <view class="stat-label">今日销量</view>
+      </view>
+      <view class="stat-num">{{stat.soldQty}}</view>
+      <view wx:if="{{stat.salesCount>0}}" class="stat-sub muted">{{stat.salesCount}} 笔订单</view>
+      <view wx:else class="stat-sub muted">等待开单</view>
+    </view>
+    <view class="card stat-cell" bindtap="goStats">
+      <view class="stat-cell-hd">
+        <view class="stat-chip stat-chip-r">
+          <view class="ico ic-106db1d677" style="width:28rpx;height:28rpx;"></view>
+        </view>
+        <view class="stat-label">今日退货</view>
+      </view>
+      <view class="stat-num {{stat.returnedCount>0 ? 'red' : ''}}">{{stat.returnedCount}}</view>
+      <view wx:if="{{stat.returnedCount>0}}" class="stat-sub red">含退货</view>
+      <view wx:else class="stat-sub muted">无退货</view>
+    </view>
+  </view>
+
+  <!-- 今日毛利 -->
+  <view class="card profit-card" bindtap="goStats">
+    <view class="profit-bg"></view>
+    <view class="between profit-row">
+      <view>
+        <view class="muted small">今日毛利（销售 − 成本）</view>
+        <view class="profit-num {{stat.grossProfit >= 0 ? 'profit-pos' : 'profit-neg'}}">¥{{stat.grossProfitText}}</view>
+      </view>
+      <view class="profit-arrow">
+        <view class="ico ic-b4b38ede7f" style="width:40rpx;height:40rpx;"></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 快捷入口（高级感圆形渐变图标 + 玻璃卡片） -->
+  <view class="quick-grid">
+    <view class="quick-item" bindtap="goSale">
+      <view class="quick-circle q-sale">
+        <view class="ico ic-8002c23835" style="width:44rpx;height:44rpx;"></view>
+      </view>
+      <view class="quick-text">去开单</view>
+    </view>
+    <view class="quick-item" bindtap="goPurchase">
+      <view class="quick-circle q-purchase">
+        <view class="ico ic-2eb20af01b" style="width:44rpx;height:44rpx;"></view>
+      </view>
+      <view class="quick-text">进货入库</view>
+    </view>
+    <view class="quick-item" bindtap="goGoods">
+      <view class="quick-circle q-goods">
+        <view class="ico ic-621792b1dc" style="width:44rpx;height:44rpx;"></view>
+      </view>
+      <view class="quick-text">商品管理</view>
+    </view>
+    <view class="quick-item" bindtap="goCustomers">
+      <view class="quick-circle q-customers">
+        <view class="ico ic-8a94a55aa9" style="width:44rpx;height:44rpx;"></view>
+      </view>
+      <view class="quick-text">客户</view>
+    </view>
+  </view>
+
+  <!-- 第二排快捷入口（文字项，无渐变） -->
+  <view class="quick-list card">
+    <view class="quick-list-row" bindtap="goSuppliers">
+      <view class="ql-icon" style="background: rgba(245,158,11,0.1);">
+        <view class="ico ic-84a3035736" style="width:32rpx;height:32rpx;"></view>
+      </view>
+      <view class="flex-1">
+        <view class="ql-title">供应商</view>
+        <view class="ql-sub muted small">维护供应商档案</view>
+      </view>
+      <view class="ql-arrow">
+        <view class="ico ic-b87e3327c3" style="width:28rpx;height:28rpx;"></view>
+      </view>
+    </view>
+    <view class="quick-list-row" bindtap="goDebts">
+      <view class="ql-icon" style="background: rgba(244,63,94,0.1);">
+        <view class="ico ic-b1b573b870" style="width:32rpx;height:32rpx;"></view>
+      </view>
+      <view class="flex-1">
+        <view class="ql-title">欠款台账</view>
+        <view class="ql-sub muted small">查看待收欠款</view>
+      </view>
+      <view class="ql-arrow">
+        <view class="ico ic-b87e3327c3" style="width:28rpx;height:28rpx;"></view>
+      </view>
+    </view>
+    <view class="quick-list-row" bindtap="goSlowMover">
+      <view class="ql-icon" style="background: rgba(139,92,246,0.1);">
+        <view class="ico ic-bf49842ac4" style="width:32rpx;height:32rpx;"></view>
+      </view>
+      <view class="flex-1">
+        <view class="ql-title">滞销分析</view>
+        <view class="ql-sub muted small">找出久未动销的商品</view>
+      </view>
+      <view class="ql-arrow">
+        <view class="ico ic-b87e3327c3" style="width:28rpx;height:28rpx;"></view>
+      </view>
+    </view>
+    <view class="quick-list-row" bindtap="goStatement">
+      <view class="ql-icon" style="background: rgba(6,182,212,0.1);">
+        <view class="ico ic-509e528a5e" style="width:32rpx;height:32rpx;"></view>
+      </view>
+      <view class="flex-1">
+        <view class="ql-title">对账单</view>
+        <view class="ql-sub muted small">生成客户对账单</view>
+      </view>
+      <view class="ql-arrow">
+        <view class="ico ic-b87e3327c3" style="width:28rpx;height:28rpx;"></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 近 7 天销售趋势 -->
+  <view class="section-title">近 7 天销售趋势</view>
+  <view class="card trend-card">
+    <view class="between">
+      <view class="card-title">销售趋势</view>
+      <view class="muted small">单位：元</view>
+    </view>
+    <view class="trend-chart">
+      <view class="trend-col" wx:for="{{trend.days}}" wx:key="label">
+        <view class="trend-value" wx:if="{{item.amount>0}}">¥{{item.amount}}</view>
+        <view class="trend-value mute" wx:else>·</view>
+        <view class="trend-bar-wrap">
+          <view class="trend-bar {{item.isToday ? 'today' : ''}}" style="height: {{item.amount>0 ? (item.amount / trend.maxV * 100) : 4}}%"></view>
+        </view>
+        <view class="trend-label {{item.isToday ? 'today' : ''}}">{{item.label}}</view>
+      </view>
+    </view>
+    <view class="between mt20 trend-foot">
+      <view class="muted small">今日 {{stat.soldQty}} 件 · ¥{{stat.salesAmount}}</view>
+      <view class="muted small" bindtap="goStats" hover-class="tap-active" style="padding:20rpx;">查看统计 ›</view>
+    </view>
+  </view>
+
+  <!-- 本月累计 -->
+  <view class="section-title">本月累计</view>
+  <view class="card month-card" bindtap="goStats">
+    <view class="month-grid">
+      <view class="m-cell">
+        <view class="m-label">销售件数</view>
+        <view class="m-num">{{mstat.soldQty}}</view>
+      </view>
+      <view class="m-cell">
+        <view class="m-label">进货件数</view>
+        <view class="m-num">{{mstat.purchaseQty}}</view>
+      </view>
+      <view class="m-cell">
+        <view class="m-label">销售额</view>
+        <view class="m-num">¥{{mstat.salesAmount}}</view>
+      </view>
+      <view class="m-cell">
+        <view class="m-label">本月毛利</view>
+        <view class="m-num {{mstat.grossProfit >= 0 ? 'green' : 'red'}}">¥{{mstat.grossProfit}}</view>
+      </view>
+    </view>
+    <view class="muted small mt20" style="text-align:right;">
+      销售 {{mstat.salesCount}} 笔 · 进货 {{mstat.purchaseCount}} 笔 · 利润率 {{mstat.profitRate}}%
+    </view>
+  </view>
+
+  <!-- 库存现状 -->
+  <view class="section-title">库存现状</view>
+  <view class="card inv-card">
+    <view class="inv-grid">
+      <view class="i-cell">
+        <view class="i-label">在库总件数</view>
+        <view class="i-num">{{inv.totalQtyText}}<text class="i-unit">件</text></view>
+        <view class="muted small">共 {{inv.skuCount}} 款商品</view>
+      </view>
+      <view class="i-cell">
+        <view class="i-label">库存价值（按成本）</view>
+        <view class="i-num">¥{{inv.totalCost}}</view>
+        <view class="muted small">按售价总值 ¥{{inv.totalRetail}}</view>
+      </view>
+    </view>
+    <view class="inv-foot">
+      <view class="muted small">全部卖完可赚 <text class="green strong">¥{{inv.expectedProfit}}</text></view>
+      <view wx:if="{{inv.lowSkuCount>0}}" class="muted small red">{{inv.lowSkuCount}} 款低库存</view>
+      <view wx:else class="muted small green">库存充足</view>
+    </view>
+  </view>
+
+  <!-- 库存分布 -->
+  <view class="section-title">库存分布</view>
+  <view class="card dist-card">
+    <view class="between">
+      <view class="card-title">分类占比</view>
+      <view class="dist-tabs">
+        <view class="dist-tab {{distTab==='cat'?'on':''}}" data-t="cat" bindtap="switchDistTab">分类</view>
+        <view class="dist-tab {{distTab==='color'?'on':''}}" data-t="color" bindtap="switchDistTab">颜色</view>
+      </view>
+    </view>
+
+    <view wx:if="{{distTab==='cat'}}">
+      <view wx:if="{{inv.byCategory.length}}" class="pie-row">
+        <view class="pie-svg-wrap">
+          <view class="pie-svg" style="background: conic-gradient({{inv.pieGradient}});">
+            <view class="pie-ring-center">
+              <view class="pie-total-num">{{inv.totalQtyText}}</view>
+              <view class="pie-total-lbl">总件数</view>
+            </view>
+          </view>
+        </view>
+        <view class="pie-legend">
+          <view wx:for="{{inv.byCategory}}" wx:key="cat" class="legend-row">
+            <view class="legend-dot" style="background: {{item.color}}"></view>
+            <view class="legend-name flex-1">{{item.cat}}</view>
+            <view class="legend-val">{{item.qty}} 件 · {{item.pct}}%</view>
+          </view>
+        </view>
+      </view>
+      <view wx:else class="muted center pad">
+        <view class="empty-icon">
+          <view class="ico ic-047daae1a8" style="width:120rpx;height:120rpx;"></view>
+        </view>
+        <view class="empty-txt">暂无库存数据</view>
+      </view>
+    </view>
+
+    <view wx:else>
+      <view wx:if="{{inv.byColor.length}}" class="pie-row">
+        <view class="pie-svg-wrap">
+          <view class="pie-svg" style="background: conic-gradient({{inv.pieGradientColor}});">
+            <view class="pie-ring-center">
+              <view class="pie-total-num">{{inv.totalQtyText}}</view>
+              <view class="pie-total-lbl">总件数</view>
+            </view>
+          </view>
+        </view>
+        <view class="pie-legend">
+          <view wx:for="{{inv.byColor}}" wx:key="colorName" class="legend-row">
+            <view class="legend-dot" style="background: {{item.fill}}"></view>
+            <view class="legend-name flex-1">{{item.colorName}}</view>
+            <view class="legend-val">{{item.qty}} 件 · {{item.pct}}%</view>
+          </view>
+        </view>
+      </view>
+      <view wx:else class="muted center pad">
+        <view class="empty-icon">
+          <view class="ico ic-7bb3ec6d31" style="width:120rpx;height:120rpx;"></view>
+        </view>
+        <view class="empty-txt">暂未维护色码</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 待收欠款（仅当有欠款时） -->
+  <view class="section-title" wx:if="{{debt.totalDebt > 0}}">待收欠款</view>
+  <view class="card debt-card" wx:if="{{debt.totalDebt > 0}}" bindtap="goDebts">
+    <view class="debt-bg"></view>
+    <view class="between">
+      <view>
+        <view class="muted small">待收欠款（不随时间变化）</view>
+        <view class="debt-amount red strong">¥{{debt.totalDebtText}}</view>
+        <view class="muted small mt10">
+          {{debt.totalCount}} 笔未结清 · 累计应收 ¥{{debt.totalAmountDueText}} · 已收 ¥{{debt.totalReceivedText}}
+        </view>
+      </view>
+      <view class="debt-go">
+        <text>去收</text>
+        <view class="ico ic-b87e3327c3" style="width:24rpx;height:24rpx;"></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 低库存预警 -->
+  <view class="section-title">低库存预警
+    <text class="section-sub">（库存 ≤ {{lowLimit}}，可点击进补货）</text>
+  </view>
+  <view class="card" wx:if="{{lowGoods.length}}">
+    <view class="list-item" wx:for="{{lowGoods}}" wx:key="rowKey" data-id="{{item._id}}" bindtap="restock" hover-class="tap-active">
+      <view class="flex-1">
+        <view class="row-title">{{item.name}}</view>
+        <view class="muted small">{{item.category || '未分类'}} · {{item.specText}}</view>
+      </view>
+      <view class="right">
+        <view class="red strong">库存 {{item.stock}} {{item.unit}}</view>
+        <view class="muted small">成本价 ¥{{item.costPrice}}</view>
+      </view>
+    </view>
+    <view class="gradient-divider mt10"></view>
+    <view class="low-tip muted small center mt10">点击商品可直接进补货单</view>
+  </view>
+  <view class="card empty-mini" wx:else>
+    <view class="empty-icon">
+      <view class="ico ic-55d77e7473" style="width:80rpx;height:80rpx;"></view>
+    </view>
+    <view class="empty-txt" style="margin-top:-10rpx;">库存充足，暂无预警</view>
+  </view>
+
+  <!-- 最近订单 -->
+  <view class="section-title">最近订单</view>
+  <view class="card" wx:if="{{recent.length}}">
+    <view class="list-item" wx:for="{{recent}}" wx:key="rowKey" data-id="{{item._id}}" data-type="{{item.type}}" bindtap="goDetail">
+      <view class="flex-1">
+        <view class="between">
+          <view class="row-title">{{item.typeText}}</view>
+          <view class="muted small">{{item.timeText}}</view>
+        </view>
+        <view class="muted small mt10">{{item.orderNo}}</view>
+        <view class="muted small mt10" wx:if="{{item.itemsText}}">明细：{{item.itemsText}}</view>
+      </view>
+      <view class="right">
+        <view class="amount">{{item.amountText}}</view>
+        <view wx:if="{{item.returned}}" class="tag tag-red" style="margin-left:0;margin-top:6rpx;">已退货</view>
+      </view>
+    </view>
+  </view>
+  <view class="card empty-mini" wx:else>
+    <view class="empty-icon">
+      <view class="ico ic-8b6883ce4e" style="width:80rpx;height:80rpx;"></view>
+    </view>
+    <view class="empty-txt">暂无订单，去开第一单吧</view>
+    <button class="btn btn-primary" bindtap="goSale">去开单</button>
+  </view>
+
+  <view class="muted center small pad">{{loading ? '数据加载中…' : '下拉可刷新'}}</view>
+</view>

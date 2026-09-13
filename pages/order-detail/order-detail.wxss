@@ -1,0 +1,19 @@
+/* pages/order-detail/order-detail.wxss */
+.type-title { font-size: 34rpx; font-weight: 700; }
+.info-row {
+  display: flex; align-items: flex-start; padding: 14rpx 0;
+  border-bottom: 1rpx solid #f7f7f7; font-size: 28rpx;
+}
+.info-row .muted { width: 160rpx; flex-shrink: 0; }
+.line { padding: 20rpx 0; border-bottom: 1rpx solid #f5f5f5; }
+.line:last-child { border-bottom: none; }
+.line-name { font-size: 28rpx; }
+.line-amount { font-weight: 700; }
+.footer-bar .act { flex: 1; }
+.footer-bar .act + .act { margin-left: 16rpx; }
+
+/* 收款卡留在文档流中；唯一固定栏为小票、打印和退货操作。 */
+.debt-settlement .settlement-info { gap: 20rpx; }
+.debt-settlement .settlement-button { width: 100%; margin-top: 24rpx; }
+.footer-bar { padding-bottom: calc(16rpx + constant(safe-area-inset-bottom)); padding-bottom: calc(16rpx + env(safe-area-inset-bottom)); }
+.page-footer-space { height: calc(180rpx + constant(safe-area-inset-bottom)); height: calc(180rpx + env(safe-area-inset-bottom)); }

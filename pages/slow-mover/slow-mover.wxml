@@ -1,0 +1,61 @@
+<!-- pages/slow-mover/slow-mover.wxml -->
+<view class="page theme-{{theme}}">
+  <view class="card" wx:if="{{errText}}">{{errText}}</view>
+  <view class="card">
+    <view class="section-title-inline">阈值</view>
+    <view class="quick">
+      <view class="chip {{threshold === 30 ? 'chip-on' : ''}}" data-d="30" bindtap="setThreshold">30天</view>
+      <view class="chip {{threshold === 90 ? 'chip-on' : ''}}" data-d="90" bindtap="setThreshold">90天</view>
+      <view class="chip {{threshold === 180 ? 'chip-on' : ''}}" data-d="180" bindtap="setThreshold">180天</view>
+      <view class="chip {{threshold === 365 ? 'chip-on' : ''}}" data-d="365" bindtap="setThreshold">365天</view>
+    </view>
+    <view class="muted small mt10">显示当前在库且至少 {{threshold}} 天没有有效销售的规格，按占款金额倒序。无有效销售时按首次入库或建档日期判断；日期不明的记录不计入。</view>
+  </view>
+
+  <view class="card">
+    <view class="section-title-inline">滞销概览</view>
+    <view class="summary-grid">
+      <view class="cell">
+        <view class="muted small">规格数</view>
+        <view class="big-num">{{summary.count}}</view>
+      </view>
+      <view class="cell">
+        <view class="muted small">占用库存</view>
+        <view class="big-num">{{summary.totalStockQty}}</view>
+        <view class="muted small">件</view>
+      </view>
+      <view class="cell">
+        <view class="muted small">占用资金（按成本）</view>
+        <view class="big-num red strong">¥{{summary.totalStockValue}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="section-title">滞销明细
+    <text class="muted small">（共 {{list.length}} 条）</text>
+  </view>
+  <view class="card" wx:if="{{list.length}}">
+    <view class="slow-row" wx:for="{{list}}" wx:key="rowKey">
+      <view class="between">
+        <view class="flex-1">
+          <view class="row-title">{{item.goodsName}}
+            <text wx:if="{{item.color || item.size}}" class="sku-tag">{{item.color}}<text wx:if="{{item.color && item.size}}"> · </text>{{item.size}}</text>
+          </view>
+          <view class="muted small mt10">{{item.unit}} · 售价 ¥{{item.priceText}} · 成本 ¥{{item.costText}}</view>
+          <view class="muted small mt10">最近销售：{{item.lastText}}</view>
+        </view>
+        <view class="right">
+          <view class="slow-qty">库存 {{item.stock}} 件</view>
+          <view class="red strong">¥{{item.stockValueText}}</view>
+        </view>
+      </view>
+      <view class="slow-actions">
+        <view class="action" data-id="{{item.goodsId}}" bindtap="goGoodEdit">降价/改信息</view>
+        <view class="action action-primary" data-id="{{item.goodsId}}" bindtap="goRestock">补货入库</view>
+      </view>
+    </view>
+  </view>
+  <view class="card empty-mini" wx:elif="{{!loading}}">
+    <view class="empty-txt"> 暂无符合当前条件的滞销库存</view>
+  </view>
+</view>

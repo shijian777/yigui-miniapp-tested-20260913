@@ -1,0 +1,9 @@
+{
+  "terminal.integrated.env.osx": {
+    "PATH": "${env:HOME}/.local/bin:${env:PATH}"
+  },
+  "files.associations": {
+    "*.wxml": "html",
+    "*.wxss": "css"
+  }
+}

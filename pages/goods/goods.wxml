@@ -1,0 +1,61 @@
+<!-- pages/goods/goods.wxml —— 商品管理（色码版） -->
+<view class="page theme-{{theme}}">
+  <view class="search-box card">
+    <text class="search-icon"><view class="ico" style="width:1em;height:1em;display:inline-block;vertical-align:middle;"><view class="ico ic-184143286c" style="width:1em;height:1em;"></view></view></text>
+    <input class="search-input" placeholder="按名称 / 条码搜索" placeholder-class="ph"
+      value="{{keyword}}" confirm-type="search" bindinput="onKeyword" />
+    <text wx:if="{{keyword}}" class="search-clear" bindtap="clearKeyword"><view class="ico" style="width:1em;height:1em;display:inline-block;vertical-align:middle;"><view class="ico ic-649f1b6624" style="width:1em;height:1em;"></view></view></text>
+  </view>
+
+  <view class="type-chips">
+    <view class="chip {{status === '' ? 'chip-on' : ''}}" data-s="" bindtap="setStatus">全部</view>
+    <view class="chip {{status === 'on' ? 'chip-on' : ''}}" data-s="on" bindtap="setStatus">在售</view>
+    <view class="chip {{status === 'off' ? 'chip-on' : ''}}" data-s="off" bindtap="setStatus">停售</view>
+  </view>
+
+  <view class="card list-card" wx:if="{{list.length}}">
+    <view class="goods-row" wx:for="{{list}}" wx:key="_id" data-id="{{item._id}}" bindtap="goEdit">
+      <view class="between">
+        <view class="flex-1">
+          <view class="row-title">{{item.name}}
+            <text class="tag {{item.status === 'on' ? 'tag-green' : 'tag-gray'}}">{{item.status === 'on' ? '在售' : '停售'}}</text>
+            <text wx:if="{{item.hasSku}}" class="tag tag-blue">色码</text>
+          </view>
+          <view class="muted small mt10">
+            {{item.category || '未分类'}} · {{item.unit}}<block wx:if="{{item.barcode}}"> · 条码 {{item.barcode}}</block>
+          </view>
+          <view wx:if="{{item.hasSku}}" class="muted small mt10 sku-info">
+            <text wx:if="{{item.colorCount}}">{{item.colorCount}} 色</text>
+            <text wx:if="{{item.colorCount && item.sizeCount}}"> × </text>
+            <text wx:if="{{item.sizeCount}}">{{item.sizeCount}} 码</text>
+            <text> · 共 {{item.skuTotal}} 个 SKU</text>
+          </view>
+        </view>
+        <view class="right">
+          <view class="sell-price">¥{{item.priceLabel}}</view>
+          <view class="muted small mt10">成本 ¥{{item.costPrice}}</view>
+        </view>
+      </view>
+      <view class="between mt20">
+        <view class="small {{item.stockLow ? 'red strong' : 'muted'}}">
+          库存 {{item.totalStockText}} {{item.unit}}
+        </view>
+        <view class="switch-wrap" catchtap="noop">
+          <switch checked="{{item.status === 'on'}}" data-id="{{item._id}}" bindchange="onToggle" color="#07c160" />
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="card empty-mini" wx:elif="{{!loading}}">
+    <view class="empty-txt">暂无商品{{keyword ? '（换个关键字）' : ''}}</view>
+    <button class="btn btn-primary" bindtap="goAdd" style="margin-top:20rpx;">新增商品</button>
+  </view>
+  <view class="card empty-mini" wx:elif="{{loading}}">
+    <view class="empty-txt">加载中…</view>
+  </view>
+
+  <view class="list-loading">{{loading && list.length ? '加载中…' : (hasMore ? '' : (list.length ? '— 已全部加载 —' : ''))}}</view>
+
+  <view class="fab" bindtap="goAdd">＋</view>
+</view>

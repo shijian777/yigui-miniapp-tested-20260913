@@ -1,0 +1,8 @@
+/* pages/settings/settings.wxss */
+.chips { display: flex; flex-wrap: wrap; }
+.chip {
+  padding: 10rpx 28rpx; background: #e9eaec; border-radius: 8rpx; font-size: 26rpx;
+  color: #555; margin: 6rpx 14rpx 6rpx 0;
+}
+.chip-on { background: #07c160; color: #fff; }
+.sup-arrow { color: #ccc; font-size: 40rpx; margin-left: 12rpx; }

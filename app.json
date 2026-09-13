@@ -1,0 +1,72 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/sale/sale",
+    "pages/orders/orders",
+    "pages/order-detail/order-detail",
+    "pages/stats/stats",
+    "pages/goods/goods",
+    "pages/goods-edit/goods-edit",
+    "pages/goods-picker/goods-picker",
+    "pages/sku-picker/sku-picker",
+    "pages/customers/customers",
+    "pages/customer-edit/customer-edit",
+    "pages/suppliers/suppliers",
+    "pages/supplier-edit/supplier-edit",
+    "pages/purchase/purchase",
+    "pages/receipt/receipt",
+    "pages/printer/printer",
+    "pages/settings/settings",
+    "pages/debts/debts",
+    "pages/slow-mover/slow-mover",
+    "pages/statement/statement"
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#ffffff",
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "衣柜",
+    "backgroundColor": "#f5f6f8",
+    "backgroundTextStyle": "dark"
+  },
+  "tabBar": {
+    "color": "#8a8f9f",
+    "selectedColor": "#6366f1",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "images/home.png",
+        "selectedIconPath": "images/home-on.png"
+      },
+      {
+        "pagePath": "pages/sale/sale",
+        "text": "开单",
+        "iconPath": "images/sale.png",
+        "selectedIconPath": "images/sale-on.png"
+      },
+      {
+        "pagePath": "pages/orders/orders",
+        "text": "流水",
+        "iconPath": "images/orders.png",
+        "selectedIconPath": "images/orders-on.png"
+      },
+      {
+        "pagePath": "pages/stats/stats",
+        "text": "统计",
+        "iconPath": "images/stats.png",
+        "selectedIconPath": "images/stats-on.png"
+      },
+      {
+        "pagePath": "pages/settings/settings",
+        "text": "我的",
+        "iconPath": "images/my.png",
+        "selectedIconPath": "images/my-on.png"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

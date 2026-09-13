@@ -1,0 +1,22 @@
+/* pages/printer/printer.wxss */
+.status-line { display: flex; align-items: center; font-size: 30rpx; font-weight: 600; }
+.dot { width: 18rpx; height: 18rpx; border-radius: 50%; display: inline-block; margin-right: 12rpx; }
+.dot-green { background: #07c160; }
+.dot-blue { background: #1989fa; }
+.dot-gray { background: #ccc; }
+.bt-actions { margin-top: 20rpx; }
+.device-list { margin-top: 10rpx; max-height: 560rpx; overflow-y: auto; }
+.pick-row { display: flex; align-items: center; padding: 20rpx 0; border-bottom: 1rpx solid #f5f5f5; }
+.pick-row:last-child { border-bottom: none; }
+.small-title { font-size: 28rpx; }
+.connect-btn {
+  color: #07c160; border: 1rpx solid #07c160; border-radius: 8rpx;
+  font-size: 24rpx; padding: 8rpx 24rpx;
+}
+.tip-box { margin-top: 16rpx; border-top: 1rpx dashed #eee; padding-top: 16rpx; }
+.tip-box view { margin: 4rpx 0; }
+
+.receipt-wrap { margin: 0 20rpx; background: #fff; border-radius: 8rpx; padding: 24rpx 12rpx; }
+.receipt-canvas { width: 100%; display: block; }
+.print-card .btn { width: 100%; }
+.progress-wrap { margin-top: 20rpx; }

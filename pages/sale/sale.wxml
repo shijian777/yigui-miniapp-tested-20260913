@@ -1,0 +1,174 @@
+<!-- pages/sale/sale.wxml —— 销售开单（购物车式） -->
+<view class="page sale-page theme-{{theme}}">
+
+  <!-- 商品搜索：扫码枪=键盘输入后回车，回车命中条码自动加购 -->
+  <view class="search-wrap">
+    <view class="search-box">
+      <text class="search-icon"><view class="ico" style="width:1em;height:1em;display:inline-block;vertical-align:middle;"><view class="ico ic-184143286c" style="width:1em;height:1em;"></view></view></text>
+      <input disabled="{{submitting}}" class="search-input" placeholder="扫码或搜索名称/条码，回车快速加购" placeholder-class="ph"
+        value="{{keyword}}" confirm-type="search" bindinput="onKeyword" bindconfirm="onSearchConfirm" focus="{{false}}" />
+      <text wx:if="{{keyword}}" class="search-clear" bindtap="clearKeyword"><view class="ico" style="width:1em;height:1em;display:inline-block;vertical-align:middle;"><view class="ico ic-649f1b6624" style="width:1em;height:1em;"></view></view></text>
+    </view>
+    <view wx:if="{{keyword}}" class="drop card">
+      <view wx:if="{{searching}}" class="list-loading">搜索中…</view>
+      <block wx:elif="{{searchList.length}}">
+        <view class="drop-item" wx:for="{{searchList}}" wx:key="_id" data-index="{{index}}" bindtap="addFromSearch">
+          <view class="flex-1">
+            <view class="row-title">{{item.name}}</view>
+            <view class="muted small">条码 {{item.barcode || '-'}} · {{item.unit}}</view>
+          </view>
+          <view class="right">
+            <view class="price">¥{{item.price}}</view>
+            <view class="{{item.stock <= 0 ? 'red' : 'muted'}} small">库存 {{item.stock}}</view>
+          </view>
+        </view>
+        <view class="list-loading" wx:if="{{searchList.length >= 20}}">仅显示前 20 条，请细化关键字</view>
+      </block>
+      <view wx:else class="list-loading">没有匹配的在售商品</view>
+    </view>
+  </view>
+
+  <!-- 购物车 -->
+  <view class="section-title">本单商品
+    <text class="muted small">（{{cart.length}} 项）</text>
+  </view>
+  <view class="card" wx:if="{{cart.length}}">
+    <view class="cart-item" wx:for="{{cart}}" wx:key="lineKey">
+      <view class="cart-head between">
+        <view class="flex-1 cart-name">{{item.name}}
+          <text wx:if="{{item.color || item.size}}" class="sku-tag">{{item.color}}<text wx:if="{{item.color && item.size}}"> · </text>{{item.size}}</text>
+        </view>
+        <view class="cart-del" data-index="{{index}}" bindtap="removeLine">删除</view>
+      </view>
+      <view class="muted small">库存 {{item.stock}} {{item.unit}} · 进价参考 ¥{{item.costPrice}}</view>
+      <view class="cart-line between">
+        <view class="cart-qty">
+          <view class="step-btn" data-index="{{index}}" data-delta="-1" bindtap="stepQty">−</view>
+          <input disabled="{{submitting}}" class="qty-input" type="number" value="{{item.qty}}" data-index="{{index}}" bindinput="onQtyInput" bindblur="onQtyBlur" />
+          <view class="step-btn" data-index="{{index}}" data-delta="1" bindtap="stepQty">＋</view>
+        </view>
+        <view class="cart-price-line">
+          <text class="muted small">单价</text>
+          <input disabled="{{submitting}}" class="money-input" type="digit" value="{{item.price}}" data-index="{{index}}" bindinput="onPriceInput" bindblur="onPriceBlur" />
+          <text class="cart-amount">¥{{item.amount}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+  <view class="card empty-mini" wx:else>
+    <view class="empty-txt">购物车是空的，先搜商品加进来吧</view>
+  </view>
+
+  <!-- 优惠结算 -->
+  <view class="section-title">结算</view>
+  <view class="card">
+    <view class="form-item">
+      <view class="form-label">折扣</view>
+      <view class="form-value flex">
+        <input disabled="{{submitting}}" class="pct-input" type="digit" value="{{pctStr}}" bindinput="onPctInput" bindblur="onPctBlur" data-v="pct" />
+        <text class="muted small"> %（100=不打折）</text>
+      </view>
+    </view>
+    <view class="form-item">
+      <view class="form-label"></view>
+      <view class="form-value chips">
+        <view class="chip {{pctStr === '95' ? 'chip-on' : ''}}" data-pct="95" bindtap="setPct">95</view>
+        <view class="chip {{pctStr === '90' ? 'chip-on' : ''}}" data-pct="90" bindtap="setPct">90</view>
+        <view class="chip {{pctStr === '85' ? 'chip-on' : ''}}" data-pct="85" bindtap="setPct">85</view>
+        <view class="chip {{pctStr === '80' ? 'chip-on' : ''}}" data-pct="80" bindtap="setPct">80</view>
+        <view class="chip {{pctStr === '100' ? 'chip-on' : ''}}" data-pct="100" bindtap="setPct">100</view>
+      </view>
+    </view>
+    <view class="form-item">
+      <view class="form-label">抹零</view>
+      <view class="form-value between">
+        <text class="muted small">去掉分角，收整数元</text>
+        <switch disabled="{{submitting}}" checked="{{erase}}" bindchange="onErase" color="#07c160" />
+      </view>
+    </view>
+
+    <view class="total-block">
+      <view class="between total-row"><text class="muted">商品合计</text><text>¥{{totals.subtotalText}}</text></view>
+      <view class="between total-row" wx:if="{{totals.discountAmount > 0}}">
+        <text class="muted">折扣（{{totals.pctText}}折）</text><text class="red">-¥{{totals.discountText}}</text>
+      </view>
+      <view class="between total-row" wx:if="{{totals.eraseAmount > 0}}">
+        <text class="muted">抹零</text><text class="red">-¥{{totals.eraseText}}</text>
+      </view>
+      <view class="between total-row due">
+        <text class="due-label">应收</text>
+        <text class="due-num">¥{{totals.amountDueText}}</text>
+      </view>
+    </view>
+
+    <view class="form-item">
+      <view class="form-label">支付方式</view>
+      <view class="form-value chips pay-chips">
+        <view class="chip {{payment === 'cash' ? 'chip-on' : ''}}" data-pay="cash" bindtap="setPayment">现金</view>
+        <view class="chip {{payment === 'wechat' ? 'chip-on' : ''}}" data-pay="wechat" bindtap="setPayment">微信</view>
+        <view class="chip {{payment === 'alipay' ? 'chip-on' : ''}}" data-pay="alipay" bindtap="setPayment">支付宝</view>
+        <view class="chip {{payment === 'credit' ? 'chip-on red' : ''}}" data-pay="credit" bindtap="setPayment">记账欠款</view>
+      </view>
+    </view>
+    <view class="form-item">
+      <view class="form-label">实收</view>
+      <view class="form-value between">
+        <view class="flex flex-1">
+          <text class="rmb">¥</text>
+          <input disabled="{{submitting}}" class="money-input" type="digit" value="{{receivedStr}}" placeholder="{{payment === 'credit' ? '0（全额欠账）' : '按应收'}}"
+            bindinput="onReceivedInput" bindblur="onReceivedBlur" placeholder-class="ph" />
+        </view>
+        <view class="btn-mini" bindtap="fillReceived">按应收</view>
+      </view>
+    </view>
+    <view class="between total-row" wx:if="{{totals.change > 0}}">
+      <text class="green strong">应找零</text><text class="green strong">¥{{totals.changeText}}</text>
+    </view>
+    <view class="between total-row" wx:if="{{totals.debt > 0}}">
+      <text class="red strong">顾客欠款</text><text class="red strong">¥{{totals.debtText}}</text>
+    </view>
+    <view class="form-item" style="border-bottom:none;">
+      <view class="form-label">备注</view>
+      <textarea disabled="{{submitting}}" class="input" placeholder="选填，会打印在小票上" value="{{remark}}" bindinput="onRemark" placeholder-class="ph" style="height:76rpx;" />
+    </view>
+
+    <!-- 顾客信息（选记账欠款时建议填；或主动选客户档案） -->
+    <view class="form-item">
+      <view class="form-label">顾客</view>
+      <view class="form-value between flex-1">
+        <view wx:if="{{customerId}}" class="flex-1">
+          <view class="row-title green">{{customerName}}</view>
+          <view class="muted small" wx:if="{{customerPhone}}">{{customerPhone}}</view>
+        </view>
+        <view wx:else class="muted small flex-1">未选客户（点右侧"选客户"或下面手填）</view>
+        <view class="chip {{customerId ? 'chip-on' : ''}}" bindtap="pickCustomer">{{customerId ? '换一位' : '选客户'}}</view>
+        <view wx:if="{{customerId}}" class="chip" bindtap="clearCustomer" style="margin-left:8rpx;">清除</view>
+      </view>
+    </view>
+    <view class="form-item" wx:if="{{!customerId}}">
+      <view class="form-label">姓名</view>
+      <view class="form-value flex">
+        <textarea disabled="{{submitting}}" class="input flex-1" placeholder="（选记账欠款时建议填）" value="{{customerName}}" bindinput="onCustomerName" placeholder-class="ph" style="height:76rpx;" />
+      </view>
+    </view>
+    <view class="form-item" wx:if="{{!customerId}}">
+      <view class="form-label">电话</view>
+      <view class="form-value flex">
+        <input disabled="{{submitting}}" class="input flex-1" type="number" placeholder="选填" value="{{customerPhone}}" bindinput="onCustomerPhone" placeholder-class="ph" />
+      </view>
+    </view>
+  </view>
+
+  <view class="page-footer-space"></view>
+
+  <!-- 底部提交栏 -->
+  <view class="footer-bar">
+    <view class="foot-total">
+      <view class="muted small">应收</view>
+      <view class="foot-num">¥{{totals.amountDueText}}</view>
+    </view>
+    <button class="btn btn-primary submit-btn" disabled="{{cart.length === 0 || submitting}}" bindtap="doSubmit">
+      {{submitting ? '提交中…' : '确认开单'}}
+    </button>
+  </view>
+</view>

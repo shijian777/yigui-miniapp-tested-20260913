@@ -1,0 +1,91 @@
+<!-- pages/printer/printer.wxml —— 蓝牙热敏打印（BLE + ESC/POS 位图） -->
+<view class="page theme-{{theme}}">
+
+  <!-- 当前单据 -->
+  <view class="card" wx:if="{{order}}">
+    <view class="between">
+      <view class="row-title">待打印销售单</view>
+      <view class="tag tag-green">¥{{amountText}}</view>
+    </view>
+    <view class="muted small mt10">{{order.orderNo}} · {{timeText}}</view>
+    <view class="muted small mt10">打印内容与小票页完全一致（Canvas 转 ESC/POS 位图）</view>
+  </view>
+
+  <!-- 蓝牙状态与操作 -->
+  <view class="section-title">蓝牙打印机</view>
+  <view class="card">
+    <view class="between">
+      <view>
+        <view class="status-line">
+          <text class="dot {{connected ? 'dot-green' : (adapterOn ? 'dot-blue' : 'dot-gray')}}"></text>
+          <text>{{connected ? '已连接：' + deviceName : (adapterOn ? '蓝牙已开启' : '蓝牙未开启')}}</text>
+        </view>
+        <view class="muted small mt10" wx:if="{{connected}}">
+          设备已连接，可以打印测试页或销售小票
+        </view>
+
+      </view>
+      <view class="flex-col">
+        <button class="btn btn-mini" style="margin:0;" wx:if="{{!connected}}" bindtap="openAdapter">开启蓝牙</button>
+        <button class="btn btn-mini btn-danger" style="margin:6rpx 0 0;" wx:if="{{connected}}" bindtap="disconnect">断开</button>
+      </view>
+    </view>
+
+    <!-- 设备搜索 -->
+    <view class="bt-actions" wx:if="{{!connected}}">
+      <button class="btn btn-plain" disabled="{{discovering || connectingId}}" bindtap="startScan">
+        {{discovering ? '搜索中…' : '搜索附近蓝牙设备'}}
+      </button>
+      <button class="btn btn-mini" wx:if="{{savedName && !discovering}}" bindtap="reconnectSaved">连接上次：{{savedName}}</button>
+    </view>
+
+    <view wx:if="{{discovering || devices.length}}" class="device-list">
+      <view class="list-loading">{{discovering ? '搜索中' : '搜索结束'}}，找到 {{devices.length}} 个设备</view>
+      <view class="pick-row" wx:for="{{devices}}" wx:key="deviceId" data-id="{{item.deviceId}}" data-name="{{item.name}}" bindtap="connectDevice">
+        <view class="flex-1">
+          <view class="row-title small-title">{{item.name || '未知设备'}}</view>
+          <view class="muted small mt10">{{item.deviceId}}</view>
+        </view>
+        <view class="connect-btn">{{connectingId === item.deviceId ? '连接中…' : '连接'}}</view>
+      </view>
+      <view class="list-loading" wx:if="{{!devices.length}}">没有发现设备？确认打印机已开机并处于可发现状态（长按打印机电源键 3 秒进入蓝牙模式）</view>
+    </view>
+
+    <view class="tip-box" wx:if="{{!discovering && !connected}}">
+      <view class="muted small">使用提示：</view>
+      <view class="muted small">1. 打印机需支持 BLE（低功耗蓝牙）；佳博/芯烨近年 58mm 机型多数支持</view>
+      <view class="muted small">2. 部分老机型只支持经典蓝牙（SPP），本程序用官方 BLE API 无法连接，属正常现象</view>
+      <view class="muted small">3. 若连接后打印花屏/乱码，请重试或在设置里确认纸张宽度为 58mm</view>
+    </view>
+  </view>
+
+  <!-- 预览 -->
+  <view class="section-title" wx:if="{{order}}">打印预览</view>
+  <view class="receipt-wrap" style="{{order ? '' : 'position:fixed;left:-9999px;top:-9999px;width:384px;'}}">
+    <canvas type="2d" id="printCanvas" class="receipt-canvas" style="height:{{canvasHeight}}px;"></canvas>
+  </view>
+
+  <view wx:if="{{!canvasReady}}" class="card"><text>{{errText || '正在准备打印画布…'}}</text><button class="btn btn-plain" bindtap="retryCanvas">重新准备</button></view>
+  <!-- 打印 -->
+  <view class="section-title">打印</view>
+  <view class="card print-card">
+    <button class="btn btn-primary" disabled="{{!connected || printing || !order || !canvasReady}}" bindtap="printOrder">
+      {{printing ? '打印中 ' + progressText : '打印本单小票'}}
+    </button>
+    <button class="btn btn-plain" style="margin-top:16rpx;" disabled="{{!connected || printing || !canvasReady}}" bindtap="printTest">
+      {{printing ? '' : '打印测试页'}}
+    </button>
+    <view wx:if="{{printing}}" class="progress-wrap">
+      <progress percent="{{progressPct}}" stroke-width="6" activeColor="#07c160" backgroundColor="#eee" />
+      <view class="between mt10">
+        <text class="muted small">{{progressText}}</text>
+        <text class="btn-mini" bindtap="cancelPrint" style="margin:0;">取消</text>
+      </view>
+    </view>
+    <view class="muted small" style="margin-top:16rpx;" wx:if="{{connected}}">
+      请确认打印机已装好 58mm 热敏纸并充满电/接通电源
+    </view>
+  </view>
+
+  <view class="page-footer-space"></view>
+</view>
